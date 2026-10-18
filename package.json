@@ -24,5 +24,8 @@
   },
   "overrides": {
     "playwright-core": "1.63.0"
+  },
+  "engines": {
+    "node": ">=22.22.0"
   }
 }

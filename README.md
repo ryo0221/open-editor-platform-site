@@ -6,7 +6,7 @@ A static Astro page served by Cloudflare Workers static assets.
 ## Run it locally
 
 ```sh
-nvm use            # Node 22 (.nvmrc)
+nvm use            # Node 22.22.0 or later (.nvmrc)
 npm ci
 npm run build      # content check → astro build → dist/_headers
 npm run preview    # http://localhost:4321
@@ -21,6 +21,7 @@ npm run preview    # http://localhost:4321
 ## Checks
 
 ```sh
+npx playwright install chromium   # once, for the browser tests (or set CHROMIUM_PATH to an existing Chromium)
 npm run check      # types (astro check) + content check
 npm test           # browser tests at PC and phone width, against dist/ and a post-release build
 npm run links      # every external link returns 200

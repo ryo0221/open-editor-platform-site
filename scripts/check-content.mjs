@@ -38,6 +38,8 @@ if (site.claudeCode.status !== 'available' && site.claudeCode.editors.length) fa
 if (site.claudeCode.status === 'available') {
   if (!isHttpsUrl(site.claudeCode.releaseUrl)) fail('claudeCode.status is available but releaseUrl is not an https URL');
   if (!site.claudeCode.editors.length) fail('claudeCode.status is available but editors is empty');
+  // The preparing notice promises the requirements at release, so both languages need them.
+  for (const lang of ['ja', 'en']) if (!site.claudeCode.requirements[lang]?.trim()) fail(`claudeCode.status is available but requirements.${lang} is empty`);
 }
 
 // control-06, constraint-05: links are https and never point at private repositories.
@@ -50,7 +52,8 @@ const isPrivateRepo = value => {
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
   } catch { return false; }
 };
-const urls = [...Object.entries(site.links), ['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u);
+// Every site link is required; only the PaoBub and release URLs may stay empty before their release.
+const urls = [...Object.entries(site.links), ...[['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u)];
 for (const [name, url] of urls) {
   if (!isHttpsUrl(url)) fail(`${name} is not a complete https URL: ${url}`);
   if (isPrivateRepo(url)) fail(`${name} points at a private repository: ${url}`);
