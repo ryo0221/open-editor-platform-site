@@ -128,5 +128,7 @@
   "footer.newTab": "(opens in a new tab)",
   "start.verify": "If an editor opens in your browser and shows the new slides, it is installed correctly.",
   "features.seconds": "{n} sec",
-  "features.minutes": "{n} min"
+  "features.minutes": "{n} min",
+  "faq.a1.released": "You can open artifacts you made with AI, such as slides and documents, in an editor in your own browser, fix them and save them. It is a tool for one person on one machine, not a shared service. The supported editors and environments are listed in Get started on this page.",
+  "faq.a3.released": "Use Claude Code's plugin update and uninstall commands. Uninstalling keeps the data folder, so delete it separately after a backup if you want it gone. See the release notes in GitHub Releases for the exact steps."
 }

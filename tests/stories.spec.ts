@@ -96,6 +96,11 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     await expect(page.locator('[data-short]')).toHaveCount(0);
     await expect(page.locator('[data-short-frame] img')).toBeVisible();
     await expect(page.locator('[data-play-summary]')).toHaveCount(0);
+    // Withheld media is not in the build, so it cannot be fetched by URL either.
+    for (const path of ['videos/uc-5-geo.mp4', 'videos/uc-5-geo.webm', 'videos/story-summary.mp4', 'videos/story-short.webm']) {
+      expect((await page.request.get(`${VARIANT}/${path}`)).status(), path).toBe(404);
+    }
+    expect((await page.request.get(`${VARIANT}/videos/uc-1-goal.mp4`)).status()).toBe(200);
     await expect(page.locator('[data-play-uc="mock"]')).toBeVisible();
   });
 
@@ -203,6 +208,8 @@ test.describe('story-04 Claude Code 版を入れて最初の成果物を作る�
     await expect(page.locator('#start .steps')).not.toHaveClass(/is-preparing/);
     await expect(page.locator('#start')).toContainText('（検査用の値）対象環境の説明');
     await expect(page.locator('.faq-note')).toHaveCount(0);
+    await expect(page.locator('#faq')).toContainText('対応する Editor と動作する環境は、このページの導入手順に載せています。');
+    await expect(page.locator('#faq')).not.toContainText('配布時に');
   });
 
   test('test-16 [story-04.criterion-03] the example prompt can be copied and the page says how to tell it worked', async ({ page, context }) => {
