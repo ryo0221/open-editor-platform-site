@@ -21,7 +21,9 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 
 // control-02, constraint-09: no dates, prices or claims about things that are not decided.
 const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
-for (const [lang, words] of [['ja', ja], ['en', en]]) {
+// The release requirements are free text rendered on the page, so they get the same scan as the words.
+const requirements = Object.fromEntries(Object.entries(site.claudeCode.requirements ?? {}).map(([lang, text]) => [`claudeCode.requirements.${lang}`, text]));
+for (const [lang, words] of [['ja', ja], ['en', en], ['settings', requirements]]) {
   for (const [key, text] of Object.entries(words)) {
     for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
   }
@@ -73,6 +75,8 @@ const file = (path, what) => {
   if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`);
 };
 for (const uc of site.videos.useCases) {
+  // A string such as "false" would count as true in the page and in prune-media.mjs.
+  if (typeof uc.inPublicBuild !== 'boolean') fail(`use case ${uc.id}: inPublicBuild must be true or false, not ${JSON.stringify(uc.inPublicBuild)}`);
   if (!uc.clip) continue;
   file(uc.clip, `use case ${uc.id}`);
   file(uc.poster, `use case ${uc.id} poster`);
