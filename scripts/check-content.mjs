@@ -35,7 +35,7 @@ oneOf(site.claudeCode.status, ['preparing', 'available'], 'claudeCode.status');
 // Only the preview words exist for Claude Desktop; 05 state-transition-05 adds words before it can become available.
 oneOf(site.claudeDesktop.status, ['preview', 'hidden'], 'claudeDesktop.status');
 // The page only has Coming soon words for these; 05 state-transition-03/04 add release words first, then allow available here.
-for (const k of ['chatgpt', 'codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
+for (const k of ['codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
 const isHttpsUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' && !!u.hostname; } catch { return false; } };
 // Editors are listed only once they are checked on the released plugin (story-04).
 if (site.claudeCode.status !== 'available' && site.claudeCode.editors.length) fail('claudeCode.editors must stay empty until claudeCode.status is available');

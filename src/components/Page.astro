@@ -16,7 +16,6 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const newTab = w('footer.newTab');
 const ways = [
   { id: 'claudeCode', status: site.claudeCode.status === 'available' ? 'available' : 'preparing', button: 'ways.status', panel: 'panel-claude-code', main: true },
-  { id: 'chatgpt', status: site.chatgpt.status, button: 'ways.plan', panel: 'panel-chatgpt' },
   { id: 'codex', status: site.codex.status, button: 'ways.plan', panel: 'panel-codex' },
   { id: 'embedding', status: site.embedding.status, button: 'ways.aboutEmbedding', panel: 'panel-embedding' },
 ];
@@ -136,7 +135,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
           <h2 id="ways-h">{w('ways.heading')}</h2>
           <p>{w('ways.lead')}</p>
         </div>
-        <div class="grid4">
+        <div class="grid3">
           {ways.map(way => (
             <div class:list={['card', way.main && 'way-main']} data-way={way.id}>
               <h3>{w(`ways.${way.id}`)}</h3>
@@ -222,7 +221,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
       <p><a href={site.links.plugins} {...ext} data-watch>{w('panel.watch')}<span class="visually-hidden">{newTab}</span></a></p>
     </div>
   </dialog>
-  {(['chatgpt', 'codex'] as const).map(id => (
+  {(['codex'] as const).map(id => (
     <dialog id={`panel-${id}`} aria-labelledby={`panel-${id}-h`}>
       <div class="dialog-head"><h2 id={`panel-${id}-h`}>{w(`ways.${id}`)}</h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
       <div class="dialog-body">

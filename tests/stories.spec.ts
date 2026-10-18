@@ -14,7 +14,7 @@ test.describe('story-01 初めて来て、何ができるかをつかむ', () =>
   test('test-01 [story-01.criterion-01] the first screen shows the value, both buttons and the Coming soon line', async ({ page }) => {
     pcOnly();
     await open(page);
-    for (const text of ['AI と人のためのオープンソース編集基盤', 'AIと作り、Editorで仕上げる。', 'スライド、文書、図表を、編集できる成果物に。', 'Claude Code 版：配布準備中', '実際の操作を見る', 'ChatGPT・Codex・独自プロダクト向けも準備中（Coming soon）']) {
+    for (const text of ['AI と人のためのオープンソース編集基盤', 'AIと作り、Editorで仕上げる。', 'スライド、文書、図表を、編集できる成果物に。', 'Claude Code 版：配布準備中', '実際の操作を見る', 'Codex・独自プロダクト向けも準備中（Coming soon）']) {
       await expect(page.getByText(text, { exact: true }).first()).toBeInViewport();
     }
   });
@@ -234,11 +234,13 @@ test.describe('story-04 Claude Code 版を入れて最初の成果物を作る�
   });
 });
 
-test.describe('story-05 ChatGPT や Codex で使えるかを知る', () => {
-  test('test-18 [story-05.criterion-01] ChatGPT and Codex cards say Coming soon in the same card system', async ({ page }) => {
+test.describe('story-05 Codex で使えるかを知る（ChatGPT は非対応・2026-10-18）', () => {
+  test('test-18 [story-05.criterion-01] the Codex card says Coming soon in the same card system, and ChatGPT is not offered', async ({ page }) => {
     pcOnly();
     await open(page);
-    for (const id of ['chatgpt', 'codex']) {
+    await expect(page.locator('[data-way="chatgpt"]')).toHaveCount(0);
+    expect(await page.locator('body').innerText()).not.toContain('ChatGPT');
+    for (const id of ['codex']) {
       const card = page.locator(`[data-way="${id}"]`);
       await expect(card).toHaveClass(/card/);
       await expect(card.locator('.status')).toHaveText('Coming soon／準備中');
@@ -248,7 +250,7 @@ test.describe('story-05 ChatGPT や Codex で使えるかを知る', () => {
   test('test-19 [story-05.criterion-02] the plan panels say timing, method and pricing are not decided, with no URLs or dates', async ({ page }) => {
     pcOnly();
     await open(page);
-    for (const [id, name] of [['chatgpt', 'ChatGPT'], ['codex', 'Codex']]) {
+    for (const [id, name] of [['codex', 'Codex']]) {
       await page.locator(`[data-way="${id}"] button`).click();
       const panel = page.locator(`#panel-${id}`);
       await expect(panel).toContainText(`${name} から Open Editor Platform を使えるようにする予定です。提供時期・接続方式・料金は未定です。`);
@@ -404,7 +406,7 @@ test.describe('story-10 英語で読む', () => {
     pcOnly();
     await open(page, '/en/');
     await expect(page.locator('[data-way="claudeCode"] .status')).toHaveText('Preparing release');
-    await expect(page.locator('[data-way="chatgpt"] .status')).toHaveText('Coming soon');
+    await expect(page.locator('[data-way="codex"] .status')).toHaveText('Coming soon');
     await expect(page.locator('[data-desktop]')).toContainText('Claude Desktop extension (.mcpb)');
     const text = await page.evaluate(() => {
       const clone = document.body.cloneNode(true) as HTMLElement;
@@ -434,12 +436,12 @@ test.describe('story-11 スマートフォンで読む', () => {
     }
   });
 
-  test('test-35 [story-11.criterion-02] the four cards stack vertically and each states its status in text', async ({ page }) => {
+  test('test-35 [story-11.criterion-02] the three cards stack vertically and each states its status in text', async ({ page }) => {
     phoneOnly();
     await open(page);
     const boxes = await page.locator('[data-way]').evaluateAll(els => els.map(e => e.getBoundingClientRect()));
     for (let i = 1; i < boxes.length; i++) expect(boxes[i].top).toBeGreaterThan(boxes[i - 1].bottom - 1);
-    await expect(page.locator('[data-way] .status')).toHaveText(['配布準備中', 'Coming soon／準備中', 'Coming soon／準備中', 'Coming soon／準備中']);
+    await expect(page.locator('[data-way] .status')).toHaveText(['配布準備中', 'Coming soon／準備中', 'Coming soon／準備中']);
   });
 
   test('test-43 [story-11.criterion-01] picking a section in the phone menu closes the menu', async ({ page }) => {

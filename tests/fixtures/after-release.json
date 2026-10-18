@@ -15,9 +15,6 @@
   "claudeDesktop": {
     "status": "preview"
   },
-  "chatgpt": {
-    "status": "coming-soon"
-  },
   "codex": {
     "status": "coming-soon"
   },
@@ -34,7 +31,10 @@
     "overview": {
       "short": "videos/story-short.mp4",
       "shortPoster": "posters/story-short.jpg",
-      "shortCaptions": { "ja": "videos/story-short.ja.vtt", "en": "videos/story-short.en.vtt" },
+      "shortCaptions": {
+        "ja": "videos/story-short.ja.vtt",
+        "en": "videos/story-short.en.vtt"
+      },
       "summary": "videos/story-summary.mp4",
       "summaryPoster": "posters/story-summary.jpg",
       "captions": {
