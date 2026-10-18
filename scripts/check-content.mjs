@@ -18,7 +18,7 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 }
 
 // control-02, constraint-09: no dates, prices or claims about things that are not decided.
-const forbidden = [/\d{4}\s*年/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d/];
+const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d/];
 for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) {
     for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
@@ -28,7 +28,8 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 // control-01: the provision state comes only from the settings.
 const oneOf = (value, allowed, name) => { if (!allowed.includes(value)) fail(`${name} is "${value}", expected one of ${allowed.join(', ')}`); };
 oneOf(site.claudeCode.status, ['preparing', 'available'], 'claudeCode.status');
-oneOf(site.claudeDesktop.status, ['preview', 'available', 'hidden'], 'claudeDesktop.status');
+// Only the preview words exist for Claude Desktop; 05 state-transition-05 adds words before it can become available.
+oneOf(site.claudeDesktop.status, ['preview', 'hidden'], 'claudeDesktop.status');
 // The page only has Coming soon words for these; 05 state-transition-03/04 add release words first, then allow available here.
 for (const k of ['chatgpt', 'codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
 if (site.claudeCode.status === 'available') {

@@ -29,6 +29,14 @@ export const overviewReady = () => site.videos.source !== '' && site.videos.useC
 
 export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !/github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i.test(url);
 
+// Clip lengths recorded by the video cut (public/videos/manifest.json), keyed by file name.
+const manifest = JSON.parse(readFileSync(join(process.cwd(), 'public/videos/manifest.json'), 'utf8'));
+export function clipLength(lang: Lang, clip: string): string {
+  const name = clip.split('/').pop()!.replace(/\.mp4$/, '');
+  const seconds = manifest.clips.find((c: { name: string }) => c.name === name)?.duration ?? 60;
+  return seconds < 50 ? t(lang, 'features.seconds', { n: String(Math.round(seconds)) }) : t(lang, 'features.minutes', { n: String(Math.max(1, Math.round(seconds / 60))) });
+}
+
 // Chapters of the summary video, read from its chapter captions at build time.
 export function chapters(lang: Lang): { start: number; title: string }[] {
   const file = join(process.cwd(), 'public', site.videos.overview.chapters[lang]);

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { t, site, asset, pageUrl, claudeCodeAvailable, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, type Lang } from '../lib/site';
+import { t, site, asset, pageUrl, claudeCodeAvailable, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, clipLength, type Lang } from '../lib/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -117,7 +117,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
                 <h3>{uc.name}</h3>
                 <p>{w('features.editorLabel', { editor: uc.editor })}</p>
                 {uc.ready
-                  ? <button class="btn btn-small" type="button" data-play-uc={uc.id}>{w('features.watch')}<span class="visually-hidden">：{uc.name}</span></button>
+                  ? <button class="btn btn-small" type="button" data-play-uc={uc.id}>{w('features.watch', { time: clipLength(lang, uc.clip) })}<span class="visually-hidden">：{uc.name}</span></button>
                   : <><span class="status status-soon">{w('status.soon')}</span><p>{w(`uc.${uc.id}.plan`)}</p></>}
               </div>
             </article>
@@ -189,7 +189,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
         {[1, 2, 3, 4, 5, 6].map(i => (
           <details><summary>{w(`faq.q${i}`)}</summary><p>{w(`faq.a${i}`)}</p></details>
         ))}
-        <p class="faq-note">{w('faq.note')}</p>
+        {!available && <p class="faq-note">{w('faq.note')}</p>}
       </div>
     </section>
   </main>

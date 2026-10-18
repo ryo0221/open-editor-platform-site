@@ -27,12 +27,12 @@
   "values.3.body": "ソースは公開されています（AGPLv3／商用ライセンス）。手元で動きます。",
   "values.editors": "Claude Code 版で使える Editor",
   "features.heading": "Open Editor Platform でできること",
-  "features.lead": "架空のカフェの出店企画を、ゴールからデザインモックまで AI と作る流れです。全体を 1 分で、各工程を約 1 分ずつで見られます。",
+  "features.lead": "架空のカフェの出店企画を、ゴールからデザインモックまで AI と作る流れです。全体を 1 分で、各工程を短い動画で見られます。",
   "features.shortLabel": "全体の流れ（1 分・音なし）",
   "features.shortAlt": "出店企画のデザインモックを Design の試作で開いた場面（架空のデータ）",
   "features.play": "再生する",
   "features.pause": "一時停止する",
-  "features.watch": "見る（1 分）",
+  "features.watch": "見る（{time}）",
   "features.summary": "まとめを見る（約 5 分）",
   "features.preparing": "動画は準備中です",
   "features.loadError": "動画を読み込めませんでした。ページを再読み込みしてください。",
@@ -126,5 +126,7 @@
   "footer.issuesNote": "LP の不具合は site、製品の不具合は本体・plugins の Issue へ。",
   "footer.credits": "書体：Noto Sans JP（SIL Open Font License 1.1）。動画の地図の境界：Natural Earth（パブリックドメイン）。Claude・ChatGPT・Codex は各社の製品名です。",
   "footer.newTab": "（新しいタブで開きます）",
-  "start.verify": "手元のブラウザで Editor が開き、作られたスライドが表示されれば、正しく入っています。"
+  "start.verify": "手元のブラウザで Editor が開き、作られたスライドが表示されれば、正しく入っています。",
+  "features.seconds": "{n} 秒",
+  "features.minutes": "{n} 分"
 }

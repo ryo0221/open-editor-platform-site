@@ -27,12 +27,12 @@
   "values.3.body": "The source is public (AGPLv3 / commercial license) and runs on your machine.",
   "values.editors": "Editors available in the Claude Code plugin",
   "features.heading": "What Open Editor Platform can do",
-  "features.lead": "A fictional café plans a new store with AI, from the goal to a design mock. Watch the whole flow in a minute, or each step in about a minute.",
+  "features.lead": "A fictional café plans a new store with AI, from the goal to a design mock. Watch the whole flow in a minute, or each step in a short clip.",
   "features.shortLabel": "The whole flow (1 min, no sound)",
   "features.shortAlt": "The store's design mock open in a Design prototype (fictional data)",
   "features.play": "Play",
   "features.pause": "Pause",
-  "features.watch": "Watch (1 min)",
+  "features.watch": "Watch ({time})",
   "features.summary": "Watch the summary (about 5 min)",
   "features.preparing": "Video coming soon",
   "features.loadError": "The video couldn't load. Please reload the page.",
@@ -126,5 +126,7 @@
   "footer.issuesNote": "Report site issues to the site repo and product issues to the core or plugins repo.",
   "footer.credits": "Font: Noto Sans JP (SIL Open Font License 1.1). Map boundaries in the videos: Natural Earth (public domain). Claude, ChatGPT and Codex are product names of their respective owners.",
   "footer.newTab": "(opens in a new tab)",
-  "start.verify": "If an editor opens in your browser and shows the new slides, it is installed correctly."
+  "start.verify": "If an editor opens in your browser and shows the new slides, it is installed correctly.",
+  "features.seconds": "{n} sec",
+  "features.minutes": "{n} min"
 }

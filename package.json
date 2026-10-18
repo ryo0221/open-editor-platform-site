@@ -9,7 +9,7 @@
     "check": "astro check && node scripts/check-content.mjs",
     "test": "npm run build && npm run build:variant && playwright test",
     "links": "node scripts/check-links.mjs",
-    "build:variant": "SITE_CONFIG=./tests/fixtures/after-release.json astro build --outDir dist-variant"
+    "build:variant": "node scripts/build-variant.mjs"
   },
   "dependencies": {
     "@fontsource/noto-sans-jp": "5.3.1",

@@ -90,6 +90,8 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     await expect(card.locator('.status')).toHaveText('準備中');
     await expect(card.getByText('既存店と候補地を地図で確かめる場面を見せる予定です。')).toBeVisible();
     await expect(card.locator('button, video')).toHaveCount(0);
+    await expect(page.locator('[data-play-uc="goal"]')).toContainText('見る（13 秒）');
+    await expect(page.locator('[data-play-uc="proposal"]')).toContainText('見る（1 分）');
     // The Short and the summary contain every step, so both give way to a still image.
     await expect(page.locator('[data-short]')).toHaveCount(0);
     await expect(page.locator('[data-short-frame] img')).toBeVisible();
@@ -200,6 +202,7 @@ test.describe('story-04 Claude Code 版を入れて最初の成果物を作る�
     await expect(page.locator('#start .steps li')).toHaveText(steps);
     await expect(page.locator('#start .steps')).not.toHaveClass(/is-preparing/);
     await expect(page.locator('#start')).toContainText('（検査用の値）対象環境の説明');
+    await expect(page.locator('.faq-note')).toHaveCount(0);
   });
 
   test('test-16 [story-04.criterion-03] the example prompt can be copied and the page says how to tell it worked', async ({ page, context }) => {
