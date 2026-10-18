@@ -1,0 +1,24 @@
+---
+import '@fontsource/noto-sans-jp/400.css';
+import '@fontsource/noto-sans-jp/700.css';
+import '../styles/global.css';
+import { t, pageUrl, type Lang } from '../lib/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t(lang, 'meta.title')}</title>
+    <meta name="description" content={t(lang, 'meta.description')} />
+    <link rel="alternate" hreflang="ja" href={pageUrl('ja')} />
+    <link rel="alternate" hreflang="en" href={pageUrl('en')} />
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,105 @@
+{
+ "recordedAt": "2026-10-18T05:55:03.469Z",
+ "commit": "421ec42",
+ "full": 344.333333,
+ "short": 63.333333,
+ "summary": 283.233333,
+ "clips": [
+  {
+   "name": "uc-1-goal",
+   "n": 1,
+   "ja": "ゴールを決める",
+   "en": "Set the goal",
+   "source": [
+    86.79,
+    99.78
+   ],
+   "speed": 1,
+   "duration": 13
+  },
+  {
+   "name": "uc-2-workflow",
+   "n": 2,
+   "ja": "ワークフローを定義する",
+   "en": "Define the workflow",
+   "source": [
+    99.78,
+    115.7
+   ],
+   "speed": 1,
+   "duration": 15.933333
+  },
+  {
+   "name": "uc-3-ideas",
+   "n": 3,
+   "ja": "アイデアを出す",
+   "en": "Brainstorm ideas",
+   "source": [
+    115.7,
+    133.83
+   ],
+   "speed": 1,
+   "duration": 18.133333
+  },
+  {
+   "name": "uc-4-data",
+   "n": 4,
+   "ja": "根拠の数値をまとめる",
+   "en": "Collect the numbers",
+   "source": [
+    133.83,
+    150.79
+   ],
+   "speed": 1,
+   "duration": 16.966667
+  },
+  {
+   "name": "uc-5-geo",
+   "n": 5,
+   "ja": "地図で確かめる",
+   "en": "Check it on a map",
+   "source": [
+    150.79,
+    235.6
+   ],
+   "speed": 1.41,
+   "duration": 60.233333
+  },
+  {
+   "name": "uc-6-proposal",
+   "n": 6,
+   "ja": "企画書にまとめる",
+   "en": "Write the proposal",
+   "source": [
+    235.6,
+    302.65
+   ],
+   "speed": 1.12,
+   "duration": 59.933333
+  },
+  {
+   "name": "uc-7-design-doc",
+   "n": 7,
+   "ja": "紹介ページを設計する",
+   "en": "Design the page",
+   "source": [
+    302.65,
+    316.04
+   ],
+   "speed": 1,
+   "duration": 13.4
+  },
+  {
+   "name": "uc-8-mock",
+   "n": 8,
+   "ja": "デザインモックを作る",
+   "en": "Make the design mock",
+   "source": [
+    316.04,
+    338.34
+   ],
+   "speed": 1,
+   "duration": 22.3
+  }
+ ]
+}

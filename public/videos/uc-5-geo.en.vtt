@@ -1,0 +1,21 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:07.127
+AI prepares map inputs: prefecture borders, stores, candidate sites
+
+2
+00:00:07.177 --> 00:00:18.489
+Import prefecture borders and color each prefecture
+
+3
+00:00:18.539 --> 00:00:40.985
+Import the store and candidate locations
+
+4
+00:00:41.035 --> 00:00:55.269
+Join stores to Data sales by store ID and size circles by sales
+
+5
+00:00:55.319 --> 00:01:00.099
+Candidate B sits between the strong eastern stores

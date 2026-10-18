@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import { pageUrl } from '../lib/site';
+---
+<Base lang="ja">
+  <main class="wrap section">
+    <h1>ページが見つかりません／Page not found</h1>
+    <p><a href={pageUrl('ja')}>トップへ</a> · <a href={pageUrl('en')} lang="en">Home</a></p>
+  </main>
+</Base>

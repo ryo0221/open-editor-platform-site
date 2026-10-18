@@ -1,0 +1,150 @@
+{
+  "claudeCode": {
+    "status": "available",
+    "releaseUrl": "https://github.com/ryo0221/editor-platform-plugins/releases",
+    "editors": [
+      "Document",
+      "Slide",
+      "Whiteboard"
+    ],
+    "requirements": {
+      "ja": "（検査用の値）対象環境の説明",
+      "en": "(test value) requirements"
+    }
+  },
+  "claudeDesktop": {
+    "status": "preview"
+  },
+  "codex": {
+    "status": "coming-soon"
+  },
+  "embedding": {
+    "status": "coming-soon"
+  },
+  "paobub": {
+    "url": "https://example.com/paobub",
+    "clip": ""
+  },
+  "videos": {
+    "source": "ai-host",
+    "commit": "421ec42",
+    "overview": {
+      "short": "videos/story-short.mp4",
+      "shortPoster": "posters/story-short.jpg",
+      "shortCaptions": {
+        "ja": "videos/story-short.ja.vtt",
+        "en": "videos/story-short.en.vtt"
+      },
+      "summary": "videos/story-summary.mp4",
+      "summaryPoster": "posters/story-summary.jpg",
+      "captions": {
+        "ja": "videos/story-summary.ja.vtt",
+        "en": "videos/story-summary.en.vtt"
+      },
+      "chapters": {
+        "ja": "videos/story-summary.chapters.ja.vtt",
+        "en": "videos/story-summary.chapters.en.vtt"
+      }
+    },
+    "useCases": [
+      {
+        "id": "goal",
+        "editor": "Document",
+        "clip": "videos/uc-1-goal.mp4",
+        "poster": "posters/uc-1-goal.jpg",
+        "captions": {
+          "ja": "videos/uc-1-goal.ja.vtt",
+          "en": "videos/uc-1-goal.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "workflow",
+        "editor": "Structured Graph",
+        "clip": "videos/uc-2-workflow.mp4",
+        "poster": "posters/uc-2-workflow.jpg",
+        "captions": {
+          "ja": "videos/uc-2-workflow.ja.vtt",
+          "en": "videos/uc-2-workflow.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "ideas",
+        "editor": "Whiteboard",
+        "clip": "videos/uc-3-ideas.mp4",
+        "poster": "posters/uc-3-ideas.jpg",
+        "captions": {
+          "ja": "videos/uc-3-ideas.ja.vtt",
+          "en": "videos/uc-3-ideas.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "data",
+        "editor": "Structured Data",
+        "clip": "videos/uc-4-data.mp4",
+        "poster": "posters/uc-4-data.jpg",
+        "captions": {
+          "ja": "videos/uc-4-data.ja.vtt",
+          "en": "videos/uc-4-data.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "geo",
+        "editor": "Geo",
+        "clip": "videos/uc-5-geo.mp4",
+        "poster": "posters/uc-5-geo.jpg",
+        "captions": {
+          "ja": "videos/uc-5-geo.ja.vtt",
+          "en": "videos/uc-5-geo.en.vtt"
+        },
+        "inPublicBuild": false
+      },
+      {
+        "id": "proposal",
+        "editor": "Slide",
+        "clip": "videos/uc-6-proposal.mp4",
+        "poster": "posters/uc-6-proposal.jpg",
+        "captions": {
+          "ja": "videos/uc-6-proposal.ja.vtt",
+          "en": "videos/uc-6-proposal.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "design-doc",
+        "editor": "Document",
+        "clip": "videos/uc-7-design-doc.mp4",
+        "poster": "posters/uc-7-design-doc.jpg",
+        "captions": {
+          "ja": "videos/uc-7-design-doc.ja.vtt",
+          "en": "videos/uc-7-design-doc.en.vtt"
+        },
+        "inPublicBuild": true
+      },
+      {
+        "id": "mock",
+        "editor": "Design",
+        "clip": "videos/uc-8-mock.mp4",
+        "poster": "posters/uc-8-mock.jpg",
+        "captions": {
+          "ja": "videos/uc-8-mock.ja.vtt",
+          "en": "videos/uc-8-mock.en.vtt"
+        },
+        "inPublicBuild": true
+      }
+    ]
+  },
+  "links": {
+    "core": "https://github.com/ryo0221/open-editor-platform",
+    "plugins": "https://github.com/ryo0221/editor-platform-plugins",
+    "developerGuide": "https://github.com/ryo0221/open-editor-platform/blob/main/docs/developer-guide.md",
+    "license": "https://github.com/ryo0221/open-editor-platform/blob/main/LICENSE",
+    "commercialLicense": "https://github.com/ryo0221/open-editor-platform/blob/main/COMMERCIAL-LICENSING.md",
+    "issuesSite": "https://github.com/ryo0221/open-editor-platform-site/issues",
+    "issuesCore": "https://github.com/ryo0221/open-editor-platform/issues",
+    "issuesPlugins": "https://github.com/ryo0221/editor-platform-plugins/issues"
+  }
+}
