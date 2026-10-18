@@ -18,7 +18,7 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 }
 
 // control-02, constraint-09: no dates, prices or claims about things that are not decided.
-const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d/];
+const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
 for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) {
     for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
@@ -32,8 +32,11 @@ oneOf(site.claudeCode.status, ['preparing', 'available'], 'claudeCode.status');
 oneOf(site.claudeDesktop.status, ['preview', 'hidden'], 'claudeDesktop.status');
 // The page only has Coming soon words for these; 05 state-transition-03/04 add release words first, then allow available here.
 for (const k of ['chatgpt', 'codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
+const isHttpsUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' && !!u.hostname; } catch { return false; } };
+// Editors are listed only once they are checked on the released plugin (story-04).
+if (site.claudeCode.status !== 'available' && site.claudeCode.editors.length) fail('claudeCode.editors must stay empty until claudeCode.status is available');
 if (site.claudeCode.status === 'available') {
-  if (!/^https:\/\//.test(site.claudeCode.releaseUrl)) fail('claudeCode.status is available but releaseUrl is not an https URL');
+  if (!isHttpsUrl(site.claudeCode.releaseUrl)) fail('claudeCode.status is available but releaseUrl is not an https URL');
   if (!site.claudeCode.editors.length) fail('claudeCode.status is available but editors is empty');
 }
 
@@ -41,7 +44,7 @@ if (site.claudeCode.status === 'available') {
 const privateRepo = /github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i;
 const urls = [...Object.entries(site.links), ['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u);
 for (const [name, url] of urls) {
-  if (!/^https:\/\//.test(url)) fail(`${name} is not https: ${url}`);
+  if (!isHttpsUrl(url)) fail(`${name} is not a complete https URL: ${url}`);
   if (privateRepo.test(url)) fail(`${name} points at a private repository: ${url}`);
 }
 
@@ -49,8 +52,9 @@ for (const [name, url] of urls) {
 oneOf(site.videos.source, ['browser', 'ai-host'], 'videos.source');
 const LIMIT = 25 * 1024 * 1024; // Cloudflare static assets: 25 MiB per file
 const file = (path, what) => {
+  if (!path) return fail(`${what}: the path is empty`);
   const full = `public/${path}`;
-  if (!existsSync(full)) return fail(`${what}: ${full} does not exist`);
+  if (!existsSync(full) || !statSync(full).isFile()) return fail(`${what}: ${full} is not a file`);
   if (statSync(full).size > LIMIT) fail(`${what}: ${full} is over 25 MiB`);
   if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`);
 };

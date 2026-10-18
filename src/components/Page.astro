@@ -75,7 +75,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
             <div class="card"><h3>{w(`values.${i}.title`)}</h3><p>{w(`values.${i}.body`)}</p></div>
           ))}
         </div>
-        {site.claudeCode.editors.length > 0 && (
+        {available && site.claudeCode.editors.length > 0 && (
           <p class="editors" data-editors><strong>{w('values.editors')}：</strong>{site.claudeCode.editors.join(lang === 'ja' ? '、' : ', ')}</p>
         )}
       </div>
