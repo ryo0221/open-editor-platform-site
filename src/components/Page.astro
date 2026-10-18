@@ -94,6 +94,7 @@ const statusWord = (s: string) => ({ available: 'status.available', preparing: '
               ? <video data-short muted loop playsinline preload="metadata" poster={asset(site.videos.overview.shortPoster)} aria-label={w('features.shortLabel')}>
                   <source src={asset(site.videos.overview.short)} type="video/mp4" />
                   <source src={asset(webm(site.videos.overview.short))} type="video/webm" />
+                  <track kind="captions" srclang={lang} label={lang === 'ja' ? '日本語' : 'English'} src={asset(site.videos.overview.shortCaptions[lang])} default />
                 </video>
               : <img src={asset(site.videos.overview.shortPoster)} width="1280" height="720" alt={w('features.shortAlt')} />}
             {showOverview && (

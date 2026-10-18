@@ -2,5 +2,6 @@
 import { execFileSync } from 'node:child_process';
 
 const opts = { stdio: 'inherit', shell: process.platform === 'win32', env: { ...process.env, SITE_CONFIG: './tests/fixtures/after-release.json' } };
+execFileSync('node', ['scripts/check-content.mjs'], opts);
 execFileSync('npx', ['astro', 'build', '--outDir', 'dist-variant'], opts);
 execFileSync('node', ['scripts/prune-media.mjs', 'dist-variant'], opts);

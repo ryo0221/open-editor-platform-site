@@ -46,6 +46,8 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     const short = page.locator('[data-short]');
     await expect(short).toHaveJSProperty('muted', true);
     await expect(short).toHaveJSProperty('loop', true);
+    // The silent Short carries captions in the page's language, shown by default.
+    await expect(short.locator('track[kind="captions"][srclang="ja"][default]')).toHaveAttribute('src', /story-short\.ja\.vtt$/);
     await expect.poll(() => short.evaluate((v: HTMLVideoElement) => !v.paused && v.currentTime > 0)).toBe(true);
     await expect(page.getByText('AI ホスト（Claude Code）との実演・ブラウザ操作は自動実行・架空データ').first()).toBeVisible();
     await expect(page.getByText('撮影：公開版 421ec42')).toBeVisible();

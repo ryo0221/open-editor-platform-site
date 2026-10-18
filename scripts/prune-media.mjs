@@ -2,7 +2,7 @@
 // The Short and the summary contain every step, so they go too whenever any use case is withheld.
 // Usage: node scripts/prune-media.mjs [outDir]   (reads SITE_CONFIG like the build)
 import { readFileSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { relative, resolve } from 'node:path';
 
 const outDir = process.argv[2] ?? 'dist';
 const site = JSON.parse(readFileSync(process.env.SITE_CONFIG ?? 'src/config/site.json', 'utf8'));
@@ -15,7 +15,10 @@ if (withheld.length) {
 const removed = [];
 for (const path of files.filter(Boolean)) {
   for (const p of path.endsWith('.mp4') ? [path, path.replace(/\.mp4$/, '.webm')] : [path]) {
-    rmSync(join(outDir, p), { force: true });
+    // Never delete outside the build directory, whatever the settings say.
+    const target = resolve(outDir, p), rel = relative(resolve(outDir), target);
+    if (!rel || rel.startsWith('..') || resolve(rel) === rel) throw new Error(`refusing to remove ${p}: outside ${outDir}`);
+    rmSync(target, { force: true });
     removed.push(p);
   }
 }

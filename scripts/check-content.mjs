@@ -1,9 +1,11 @@
 // Build-time content checks for the settings file, the ja/en words and the video files (07 control-01..06, 10).
 // Exits non-zero on the first run with any problem, so `npm run build` stops before anything is published.
 import { readFileSync, existsSync, statSync } from 'node:fs';
+import { isAbsolute, normalize } from 'node:path';
 
 const read = p => JSON.parse(readFileSync(p, 'utf8'));
-const site = read('src/config/site.json');
+// SITE_CONFIG selects another settings file, as in the build (astro.config.mjs).
+const site = read(process.env.SITE_CONFIG ?? 'src/config/site.json');
 const ja = read('src/i18n/ja.json');
 const en = read('src/i18n/en.json');
 const problems = [];
@@ -64,6 +66,7 @@ oneOf(site.videos.source, ['browser', 'ai-host'], 'videos.source');
 const LIMIT = 25 * 1024 * 1024; // Cloudflare static assets: 25 MiB per file
 const file = (path, what) => {
   if (!path) return fail(`${what}: the path is empty`);
+  if (isAbsolute(path) || normalize(path).split(/[\\/]/).includes('..')) return fail(`${what}: ${path} must stay inside public/`);
   const full = `public/${path}`;
   if (!existsSync(full) || !statSync(full).isFile()) return fail(`${what}: ${full} is not a file`);
   if (statSync(full).size > LIMIT) fail(`${what}: ${full} is over 25 MiB`);
@@ -79,7 +82,7 @@ for (const uc of site.videos.useCases) {
 const o = site.videos.overview;
 file(o.shortPoster, 'Short poster');
 if (site.videos.useCases.every(uc => uc.clip && uc.inPublicBuild)) {
-  for (const [p, what] of [[o.short, 'Short'], [o.summary, 'summary'], [o.summaryPoster, 'summary poster'], [o.captions.ja, 'summary captions (ja)'], [o.captions.en, 'summary captions (en)'], [o.chapters.ja, 'chapters (ja)'], [o.chapters.en, 'chapters (en)']]) file(p, what);
+  for (const [p, what] of [[o.short, 'Short'], [o.summary, 'summary'], [o.summaryPoster, 'summary poster'], [o.shortCaptions.ja, 'Short captions (ja)'], [o.shortCaptions.en, 'Short captions (en)'], [o.captions.ja, 'summary captions (ja)'], [o.captions.en, 'summary captions (en)'], [o.chapters.ja, 'chapters (ja)'], [o.chapters.en, 'chapters (en)']]) file(p, what);
 }
 if (existsSync('public/videos/manifest.json')) {
   const manifest = read('public/videos/manifest.json');
