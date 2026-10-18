@@ -7,7 +7,7 @@
     "build": "node scripts/check-content.mjs && astro build && node scripts/write-headers.mjs",
     "preview": "astro preview --port 4321",
     "check": "astro check && node scripts/check-content.mjs",
-    "test": "npm run build:variant && playwright test",
+    "test": "npm run build && npm run build:variant && playwright test",
     "links": "node scripts/check-links.mjs",
     "build:variant": "SITE_CONFIG=./tests/fixtures/after-release.json astro build --outDir dist-variant"
   },

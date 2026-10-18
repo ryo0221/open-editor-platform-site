@@ -27,14 +27,14 @@ export const claudeCodeAvailable = () => site.claudeCode.status === 'available' 
 export const useCaseReady = (uc: (typeof site.videos.useCases)[number]) => uc.inPublicBuild && uc.clip !== '';
 export const overviewReady = () => site.videos.source !== '' && site.videos.useCases.every(useCaseReady);
 
-export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !/github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\/|$)/.test(url);
+export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !/github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i.test(url);
 
 // Chapters of the summary video, read from its chapter captions at build time.
 export function chapters(lang: Lang): { start: number; title: string }[] {
   const file = join(process.cwd(), 'public', site.videos.overview.chapters[lang]);
   const toSec = (s: string) => s.split(':').reduce((a, p) => a * 60 + parseFloat(p), 0);
-  return readFileSync(file, 'utf8').split(/\n\n+/).flatMap(block => {
-    const m = block.match(/(\d\d:\d\d:\d\d\.\d+) --> .*\n(.+)/);
+  return readFileSync(file, 'utf8').split(/(?:\r?\n){2,}/).flatMap(block => {
+    const m = block.match(/(\d\d:\d\d:\d\d\.\d+) --> .*\r?\n(.+)/);
     return m ? [{ start: toSec(m[1]), title: m[2].trim() }] : [];
   });
 }

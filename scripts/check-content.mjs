@@ -29,14 +29,15 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 const oneOf = (value, allowed, name) => { if (!allowed.includes(value)) fail(`${name} is "${value}", expected one of ${allowed.join(', ')}`); };
 oneOf(site.claudeCode.status, ['preparing', 'available'], 'claudeCode.status');
 oneOf(site.claudeDesktop.status, ['preview', 'available', 'hidden'], 'claudeDesktop.status');
-for (const k of ['chatgpt', 'codex', 'embedding']) oneOf(site[k].status, ['coming-soon', 'available'], `${k}.status`);
+// The page only has Coming soon words for these; 05 state-transition-03/04 add release words first, then allow available here.
+for (const k of ['chatgpt', 'codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
 if (site.claudeCode.status === 'available') {
   if (!/^https:\/\//.test(site.claudeCode.releaseUrl)) fail('claudeCode.status is available but releaseUrl is not an https URL');
   if (!site.claudeCode.editors.length) fail('claudeCode.status is available but editors is empty');
 }
 
 // control-06, constraint-05: links are https and never point at private repositories.
-const privateRepo = /github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\/|$|\?|#)/;
+const privateRepo = /github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i;
 const urls = [...Object.entries(site.links), ['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u);
 for (const [name, url] of urls) {
   if (!/^https:\/\//.test(url)) fail(`${name} is not https: ${url}`);

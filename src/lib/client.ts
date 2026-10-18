@@ -134,6 +134,13 @@ function setupCopy() {
   });
 }
 
+// On phones the menu drops down over the page, so picking a section closes it.
+function setupMenu() {
+  const menu = $<HTMLDetailsElement>('details.menu');
+  if (!menu) return;
+  for (const link of $$<HTMLAnchorElement>('a[href^="#"]', menu)) link.addEventListener('click', () => { menu.open = false; });
+}
+
 // The language switch keeps the section the reader is on.
 function setupLangSwitch() {
   const link = $<HTMLAnchorElement>('[data-lang-switch]');
@@ -146,5 +153,6 @@ export function setup() {
   setupShort();
   setupPlayer(data);
   setupCopy();
+  setupMenu();
   setupLangSwitch();
 }

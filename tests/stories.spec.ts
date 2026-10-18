@@ -429,6 +429,16 @@ test.describe('story-11 スマートフォンで読む', () => {
     await expect(page.locator('[data-way] .status')).toHaveText(['配布準備中', 'Coming soon／準備中', 'Coming soon／準備中', 'Coming soon／準備中']);
   });
 
+  test('test-43 [story-11.criterion-01] picking a section in the phone menu closes the menu', async ({ page }) => {
+    phoneOnly();
+    await open(page);
+    const menu = page.locator('details.menu');
+    await menu.locator('summary').click();
+    await menu.getByRole('link', { name: 'FAQ' }).click();
+    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(page.locator('#faq-h')).toBeInViewport();
+  });
+
   test('test-36 [story-11.criterion-03] nothing claims the editor itself is mobile-ready', async ({ page }) => {
     phoneOnly();
     for (const path of ['/', '/en/']) {
