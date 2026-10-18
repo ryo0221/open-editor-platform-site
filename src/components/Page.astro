@@ -1,0 +1,284 @@
+---
+import Base from '../layouts/Base.astro';
+import { t, site, asset, pageUrl, claudeCodeAvailable, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, type Lang } from '../lib/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const w = (key: string, vars?: Record<string, string>) => t(lang, key, vars);
+const other: Lang = lang === 'ja' ? 'en' : 'ja';
+const available = claudeCodeAvailable();
+const showOverview = overviewReady();
+const useCases = site.videos.useCases.map((uc, i) => ({ ...uc, n: i + 1, name: w(`uc.${uc.id}`), ready: useCaseReady(uc) }));
+const playable = useCases.filter(uc => uc.ready);
+const paobubUrl = isPublicPaobubUrl(site.paobub.url) ? site.paobub.url : '';
+const note = site.videos.source === 'browser' ? w('features.noteBrowser') : w('features.noteAiHost');
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+const newTab = w('footer.newTab');
+const ways = [
+  { id: 'claudeCode', status: site.claudeCode.status === 'available' ? 'available' : 'preparing', button: 'ways.status', panel: 'panel-claude-code', main: true },
+  { id: 'chatgpt', status: site.chatgpt.status, button: 'ways.plan', panel: 'panel-chatgpt' },
+  { id: 'codex', status: site.codex.status, button: 'ways.plan', panel: 'panel-codex' },
+  { id: 'embedding', status: site.embedding.status, button: 'ways.aboutEmbedding', panel: 'panel-embedding' },
+];
+const statusWord = (s: string) => ({ available: 'status.available', preparing: 'status.preparing', 'coming-soon': 'status.comingSoon' })[s] ?? 'status.soon';
+---
+<Base lang={lang}>
+  <a class="skip" href="#main">{w('skip')}</a>
+  <header class="header">
+    <div class="wrap">
+      <a class="logo" href={pageUrl(lang)}>Open Editor Platform</a>
+      <nav class="nav nav-wide" aria-label={w('menu')}>
+        <a href="#features">{w('nav.features')}</a>
+        <a href="#ways">{w('nav.ways')}</a>
+        <a href="#paobub">{w('nav.paobub')}</a>
+        <a href="#faq">{w('nav.faq')}</a>
+        <a href={site.links.core} {...ext}>{w('nav.github')}<span class="visually-hidden">{newTab}</span></a>
+      </nav>
+      <details class="menu">
+        <summary>{w('menu')}</summary>
+        <nav class="nav" aria-label={w('menu')}>
+          <a href="#features">{w('nav.features')}</a>
+          <a href="#ways">{w('nav.ways')}</a>
+          <a href="#paobub">{w('nav.paobub')}</a>
+          <a href="#faq">{w('nav.faq')}</a>
+          <a href={site.links.core} {...ext}>{w('nav.github')}<span class="visually-hidden">{newTab}</span></a>
+        </nav>
+      </details>
+      <a class="lang" href={pageUrl(other)} hreflang={other} lang={other} data-lang-switch>{w('lang.switch')}<span class="visually-hidden">（{w('lang.switchLabel')}）</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">{w('hero.eyebrow')}</p>
+          <h1>{w('hero.title')}</h1>
+          <p class="sub">{w('hero.sub')}</p>
+          <div class="cta">
+            {available
+              ? <a class="btn btn-primary" href={site.claudeCode.releaseUrl} {...ext} data-cta="available">{w('hero.ctaAvailable')}<span class="visually-hidden">{newTab}</span></a>
+              : <button class="btn btn-preparing" type="button" data-open="panel-claude-code" data-cta="preparing">{w('hero.ctaPreparing')}</button>}
+            <a class="btn" href="#features">{w('hero.secondary')}</a>
+          </div>
+          <p class="others">{w('hero.others')}</p>
+        </div>
+        <img class="shot" src={asset('posters/hero.jpg')} width="1344" height="840" alt={w('hero.imageAlt')} />
+      </div>
+    </section>
+
+    <section class="values section" id="values" aria-labelledby="values-h">
+      <div class="wrap">
+        <h2 class="visually-hidden" id="values-h">{w('values.heading')}</h2>
+        <div class="grid3">
+          {[1, 2, 3].map(i => (
+            <div class="card"><h3>{w(`values.${i}.title`)}</h3><p>{w(`values.${i}.body`)}</p></div>
+          ))}
+        </div>
+        {site.claudeCode.editors.length > 0 && (
+          <p class="editors" data-editors><strong>{w('values.editors')}：</strong>{site.claudeCode.editors.join(lang === 'ja' ? '、' : ', ')}</p>
+        )}
+      </div>
+    </section>
+
+    <section class="section" id="features" aria-labelledby="features-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="features-h">{w('features.heading')}</h2>
+          <p>{w('features.lead')}</p>
+        </div>
+        <div class="short">
+          <p class="eyebrow">{w('features.shortLabel')}</p>
+          <div class="frame" data-short-frame>
+            {showOverview
+              ? <video data-short muted loop playsinline preload="metadata" poster={asset(site.videos.overview.shortPoster)} aria-label={w('features.shortLabel')}>
+                  <source src={asset(site.videos.overview.short)} type="video/mp4" />
+                  <source src={asset(webm(site.videos.overview.short))} type="video/webm" />
+                </video>
+              : <img src={asset(site.videos.overview.shortPoster)} width="1280" height="720" alt={w('features.shortAlt')} />}
+            {showOverview && (
+              <div class="frame-controls">
+                <button class="btn btn-small" type="button" data-short-toggle data-play={w('features.play')} data-pause={w('features.pause')}>{w('features.play')}</button>
+              </div>
+            )}
+          </div>
+          <p class="load-error" data-short-error hidden>{w('features.loadError')}</p>
+          <p><span class="note">{note}</span> <span class="note">{w('features.recordedOn', { commit: site.videos.commit })}</span></p>
+        </div>
+
+        <div class="grid4">
+          {useCases.map(uc => (
+            <article class="card uc" data-uc={uc.id} data-state={uc.ready ? 'ready' : 'soon'}>
+              {uc.ready
+                ? <img src={asset(uc.poster)} width="800" height="500" alt={w('features.posterAlt', { name: uc.name, editor: uc.editor })} />
+                : <div class="uc-pending">{w('features.preparing')}</div>}
+              <div class="uc-body">
+                <p class="uc-num">{String(uc.n).padStart(2, '0')}</p>
+                <h3>{uc.name}</h3>
+                <p>{w('features.editorLabel', { editor: uc.editor })}</p>
+                {uc.ready
+                  ? <button class="btn btn-small" type="button" data-play-uc={uc.id}>{w('features.watch')}<span class="visually-hidden">：{uc.name}</span></button>
+                  : <><span class="status status-soon">{w('status.soon')}</span><p>{w(`uc.${uc.id}.plan`)}</p></>}
+              </div>
+            </article>
+          ))}
+        </div>
+        {showOverview && (
+          <div class="summary-row"><button class="btn" type="button" data-play-summary>{w('features.summary')}</button></div>
+        )}
+      </div>
+    </section>
+
+    <section class="section" id="ways" aria-labelledby="ways-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="ways-h">{w('ways.heading')}</h2>
+          <p>{w('ways.lead')}</p>
+        </div>
+        <div class="grid4">
+          {ways.map(way => (
+            <div class:list={['card', way.main && 'way-main']} data-way={way.id}>
+              <h3>{w(`ways.${way.id}`)}</h3>
+              <p><span class={`status status-${way.status}`}>{w(statusWord(way.status))}</span></p>
+              <button class="btn btn-small" type="button" data-open={way.panel}>{w(way.button)}</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="start" aria-labelledby="start-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="start-h">{w('start.heading')}</h2>
+          <p>{w('start.lead')}</p>
+        </div>
+        {!available && <p class="band band-preparing">{w('start.preparing')}</p>}
+        <ol class:list={['steps', !available && 'is-preparing']}>
+          {[1, 2, 3, 4, 5].map(i => <li>{w(`start.step${i}`)}</li>)}
+        </ol>
+        {available && (
+          <>
+            {site.claudeCode.requirements[lang] && <p class="desktop">{site.claudeCode.requirements[lang]}</p>}
+            <div class="copy">
+              <code data-prompt>{w('start.prompt')}</code>
+              <button class="btn btn-small" type="button" data-copy data-copied={w('start.copied')}>{w('start.copy')}</button>
+            </div>
+            <p class="desktop" data-verify>{w('start.verify')}</p>
+          </>
+        )}
+        {site.claudeDesktop.status !== 'hidden' && <p class="desktop" data-desktop>{w('start.desktop')}</p>}
+      </div>
+    </section>
+
+    <section class="section paobub" id="paobub" aria-labelledby="paobub-h">
+      <div class="wrap">
+        <div class="body">
+          <p class="eyebrow">{w('paobub.eyebrow')}</p>
+          <h2 id="paobub-h">{w('paobub.heading')}</h2>
+          {!paobubUrl && <p><span class="status status-soon">{w('status.soon')}</span></p>}
+          <p>{w('paobub.body')}</p>
+          {paobubUrl && <p><a class="btn" href={paobubUrl} {...ext} data-paobub-link>{w('paobub.visit')}<span class="visually-hidden">{newTab}</span></a></p>}
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" id="faq" aria-labelledby="faq-h">
+      <div class="wrap">
+        <div class="section-head"><h2 id="faq-h">{w('faq.heading')}</h2></div>
+        {[1, 2, 3, 4, 5, 6].map(i => (
+          <details><summary>{w(`faq.q${i}`)}</summary><p>{w(`faq.a${i}`)}</p></details>
+        ))}
+        <p class="faq-note">{w('faq.note')}</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <ul>
+        <li><a href={site.links.core} {...ext}>{w('footer.core')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.plugins} {...ext}>{w('footer.plugins')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.developerGuide} {...ext}>{w('footer.developerGuide')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.license} {...ext}>{w('footer.license')}<span class="visually-hidden">{newTab}</span></a></li>
+      </ul>
+      <p><strong>{w('footer.issues')}</strong></p>
+      <ul>
+        <li><a href={site.links.issuesSite} {...ext}>{w('footer.issuesSite')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.issuesCore} {...ext}>{w('footer.issuesCore')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.issuesPlugins} {...ext}>{w('footer.issuesPlugins')}<span class="visually-hidden">{newTab}</span></a></li>
+      </ul>
+      <p>{w('footer.issuesNote')}</p>
+      <p class="credits">{w('footer.credits')}</p>
+    </div>
+  </footer>
+
+  <dialog id="panel-claude-code" aria-labelledby="panel-claude-code-h">
+    <div class="dialog-head"><h2 id="panel-claude-code-h">{w('ways.claudeCode')}</h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+    <div class="dialog-body">
+      <p><span class={`status status-${available ? 'available' : 'preparing'}`}>{w(available ? 'status.available' : 'status.preparing')}</span></p>
+      {!available && <p>{w('panel.claudeCode.body')}</p>}
+      <p><a href={site.links.plugins} {...ext} data-watch>{w('panel.watch')}<span class="visually-hidden">{newTab}</span></a></p>
+    </div>
+  </dialog>
+  {(['chatgpt', 'codex'] as const).map(id => (
+    <dialog id={`panel-${id}`} aria-labelledby={`panel-${id}-h`}>
+      <div class="dialog-head"><h2 id={`panel-${id}-h`}>{w(`ways.${id}`)}</h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+      <div class="dialog-body">
+        <p><span class={`status status-${site[id].status}`}>{w(statusWord(site[id].status))}</span></p>
+        <p>{w(`panel.${id}.body`)}</p>
+      </div>
+    </dialog>
+  ))}
+  <dialog id="panel-embedding" aria-labelledby="panel-embedding-h">
+    <div class="dialog-head"><h2 id="panel-embedding-h">{w('ways.embedding')}</h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+    <div class="dialog-body">
+      {site.embedding.status !== 'available' && <p class="band band-soon">{w('panel.embedding.soon')}</p>}
+      <p class="band band-now">{w('panel.embedding.now')}</p>
+      <p>
+        <a href={site.links.developerGuide} {...ext}>{w('panel.developerGuide')}<span class="visually-hidden">{newTab}</span></a> ·
+        <a href={site.links.license} {...ext}>{w('panel.license')}<span class="visually-hidden">{newTab}</span></a> ·
+        <a href={site.links.commercialLicense} {...ext}>{w('panel.commercialLicense')}<span class="visually-hidden">{newTab}</span></a>
+      </p>
+      <p><a href="#paobub" data-close-to="#paobub">{w('panel.paobubExample')}</a></p>
+    </div>
+  </dialog>
+
+  {showOverview || playable.length > 0 ? (
+    <dialog id="player" class="player" aria-labelledby="player-h">
+      <div class="dialog-head"><h2 id="player-h" data-player-title></h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+      <div class="dialog-body">
+        <video data-player controls playsinline preload="none"></video>
+        <p class="load-error" data-player-error hidden>{w('features.loadError')}</p>
+        <div class="player-nav" data-uc-nav>
+          <button class="btn btn-small" type="button" data-step="-1">{w('player.prev')}</button>
+          <button class="btn btn-small" type="button" data-step="1">{w('player.next')}</button>
+        </div>
+        {showOverview && (
+          <div data-chapters hidden>
+            <p>{w('player.chapters')}</p>
+            <ol class="chapters">
+              {chapters(lang).map(c => <li><button class="btn btn-small" type="button" data-seek={c.start}>{c.title}</button></li>)}
+            </ol>
+          </div>
+        )}
+        <p><span class="note">{note}</span></p>
+      </div>
+    </dialog>
+  ) : null}
+
+  <script
+    is:inline
+    type="application/json"
+    id="video-data"
+    set:html={JSON.stringify({
+      lang,
+      useCases: playable.map(uc => ({ id: uc.id, name: uc.name, clip: asset(uc.clip), poster: asset(uc.poster), captions: { ja: asset(uc.captions.ja), en: asset(uc.captions.en) } })),
+      summary: showOverview ? { title: w('player.summaryTitle'), clip: asset(site.videos.overview.summary), poster: asset(site.videos.overview.summaryPoster), captions: { ja: asset(site.videos.overview.captions.ja), en: asset(site.videos.overview.captions.en) } } : null,
+    })}
+  />
+  <script>
+    import { setup } from '../lib/client';
+    setup();
+  </script>
+</Base>
