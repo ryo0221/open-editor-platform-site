@@ -31,7 +31,7 @@ export const overviewReady = () => site.videos.source !== '' && site.videos.useC
 const isPrivateRepo = (value: string) => {
   try {
     const u = new URL(value);
-    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase())) return false;
+    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
     const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
   } catch { return false; }
@@ -42,7 +42,9 @@ export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !is
 const manifest = JSON.parse(readFileSync(join(process.cwd(), 'public/videos/manifest.json'), 'utf8'));
 export function clipLength(lang: Lang, clip: string): string {
   const name = clip.split('/').pop()!.replace(/\.mp4$/, '');
-  const seconds = manifest.clips.find((c: { name: string }) => c.name === name)?.duration ?? 60;
+  const seconds = manifest.clips.find((c: { name: string }) => c.name === name)?.duration;
+  // check-content.mjs requires every clip in the manifest; never guess a length.
+  if (typeof seconds !== 'number') throw new Error(`${name} has no length in public/videos/manifest.json`);
   return seconds < 50 ? t(lang, 'features.seconds', { n: String(Math.round(seconds)) }) : t(lang, 'features.minutes', { n: String(Math.max(1, Math.round(seconds / 60))) });
 }
 

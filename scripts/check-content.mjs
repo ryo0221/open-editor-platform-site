@@ -51,7 +51,7 @@ if (site.claudeCode.status === 'available') {
 const isPrivateRepo = value => {
   try {
     const u = new URL(value);
-    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase())) return false;
+    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
     const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
   } catch { return false; }
@@ -74,6 +74,9 @@ const file = (path, what) => {
   if (statSync(full).size > LIMIT) fail(`${what}: ${full} is over 25 MiB`);
   if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`);
 };
+// Ids must be unique: the player looks a card's clip up by id.
+const ids = site.videos.useCases.map(uc => uc.id);
+for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) fail(`use case id "${id}" is used more than once`);
 for (const uc of site.videos.useCases) {
   // A string such as "false" would count as true in the page and in prune-media.mjs.
   if (typeof uc.inPublicBuild !== 'boolean') fail(`use case ${uc.id}: inPublicBuild must be true or false, not ${JSON.stringify(uc.inPublicBuild)}`);
@@ -91,6 +94,11 @@ if (site.videos.useCases.every(uc => uc.clip && uc.inPublicBuild)) {
 if (existsSync('public/videos/manifest.json')) {
   const manifest = read('public/videos/manifest.json');
   if (manifest.commit !== site.videos.commit) fail(`videos.commit is ${site.videos.commit} but the manifest says ${manifest.commit}`);
+  // The Watch buttons show each clip's length from the manifest, so every playable clip needs an entry.
+  for (const uc of site.videos.useCases.filter(uc => uc.clip && uc.inPublicBuild === true)) {
+    const name = uc.clip.split('/').pop().replace(/\.mp4$/, '');
+    if (typeof manifest.clips?.find(c => c.name === name)?.duration !== 'number') fail(`use case ${uc.id}: ${name} has no length in public/videos/manifest.json`);
+  }
 } else fail('public/videos/manifest.json is missing');
 
 if (problems.length) {
