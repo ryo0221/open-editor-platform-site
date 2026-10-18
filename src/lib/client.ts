@@ -33,6 +33,8 @@ function setupDialogs() {
         section.setAttribute('tabindex', '-1');
         dialog.dataset.returnTo = link.dataset.closeTo!;
         dialog.close();
+        // Keep the fragment in the address, as a normal link would, so history and the language switch follow it.
+        history.pushState(null, '', link.dataset.closeTo!);
         section.scrollIntoView();
       });
     }

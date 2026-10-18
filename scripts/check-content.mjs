@@ -20,7 +20,7 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 }
 
 // control-02, constraint-09: no dates, prices or claims about things that are not decided.
-const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€]\s*\d/, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
+const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€£₩₹]\s*\d/, /\b(USD|EUR|JPY|GBP)\s*\d/i, /\d\s*(dollars?|euros?|pounds?|yen|USD|EUR|JPY|GBP)\b/i, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
 // The release requirements are free text rendered on the page, so they get the same scan as the words.
 const requirements = Object.fromEntries(Object.entries(site.claudeCode.requirements ?? {}).map(([lang, text]) => [`claudeCode.requirements.${lang}`, text]));
 for (const [lang, words] of [['ja', ja], ['en', en], ['settings', requirements]]) {
@@ -52,9 +52,9 @@ const isPrivateRepo = value => {
   try {
     const u = new URL(value);
     if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
-    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
+    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => decodeURIComponent(s).toLowerCase());
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
-  } catch { return false; }
+  } catch { return true; } // unreadable: treat as private
 };
 // Every site link is required; only the PaoBub and release URLs may stay empty before their release.
 const urls = [...Object.entries(site.links), ...[['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u)];
@@ -88,6 +88,8 @@ for (const uc of site.videos.useCases) {
 }
 const o = site.videos.overview;
 file(o.shortPoster, 'Short poster');
+// The hero image is fixed in Page.astro rather than in the settings, but it must exist too.
+file('posters/hero.jpg', 'hero image');
 if (site.videos.useCases.every(uc => uc.clip && uc.inPublicBuild)) {
   for (const [p, what] of [[o.short, 'Short'], [o.summary, 'summary'], [o.summaryPoster, 'summary poster'], [o.shortCaptions.ja, 'Short captions (ja)'], [o.shortCaptions.en, 'Short captions (en)'], [o.captions.ja, 'summary captions (ja)'], [o.captions.en, 'summary captions (en)'], [o.chapters.ja, 'chapters (ja)'], [o.chapters.en, 'chapters (en)']]) file(p, what);
 }

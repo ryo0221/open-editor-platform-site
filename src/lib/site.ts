@@ -32,9 +32,9 @@ const isPrivateRepo = (value: string) => {
   try {
     const u = new URL(value);
     if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
-    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
+    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => decodeURIComponent(s).toLowerCase());
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
-  } catch { return false; }
+  } catch { return true; } // unreadable: treat as private
 };
 export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !isPrivateRepo(url);
 

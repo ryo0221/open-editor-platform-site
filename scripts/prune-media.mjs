@@ -12,8 +12,10 @@ if (withheld.length) {
   const o = site.videos.overview;
   files.push(o.short, o.summary, o.summaryPoster, o.captions?.ja, o.captions?.en, o.chapters?.ja, o.chapters?.en, o.shortCaptions?.ja, o.shortCaptions?.en);
 }
+// Files a public use case still points at stay, even if a withheld one shares them.
+const kept = new Set(site.videos.useCases.filter(uc => uc.inPublicBuild).flatMap(uc => [uc.clip, uc.poster, uc.captions?.ja, uc.captions?.en]).filter(Boolean));
 const removed = [];
-for (const path of files.filter(Boolean)) {
+for (const path of files.filter(p => p && !kept.has(p))) {
   for (const p of path.endsWith('.mp4') ? [path, path.replace(/\.mp4$/, '.webm')] : [path]) {
     // Never delete outside the build directory, whatever the settings say.
     const target = resolve(outDir, p), rel = relative(resolve(outDir), target);

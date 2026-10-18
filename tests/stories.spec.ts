@@ -285,6 +285,7 @@ test.describe('story-06 自分のプロダクトへの組み込みを検討す�
     await page.locator('[data-way="embedding"] button').click();
     await page.getByRole('link', { name: '実例：PaoBub を見る' }).click();
     await expect(page.locator('#panel-embedding')).toBeHidden();
+    await expect(page).toHaveURL(/#paobub$/);
     await expect(page.locator('#paobub-h')).toBeInViewport();
     await expect(page.locator('#paobub')).toBeFocused();
   });
