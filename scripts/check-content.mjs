@@ -15,6 +15,9 @@ const fail = msg => problems.push(msg);
 for (const [a, b, name] of [[ja, en, 'en'], [en, ja, 'ja']]) {
   for (const key of Object.keys(a)) if (!(key in b)) fail(`word "${key}" is missing in ${name}`);
 }
+// t() fills {name} placeholders; both languages must use the same names or a value goes missing.
+const holders = text => [...String(text).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
+for (const key of Object.keys(ja)) if (key in en && holders(ja[key]) !== holders(en[key])) fail(`word "${key}" uses {${holders(ja[key])}} in ja but {${holders(en[key])}} in en`);
 for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) if (!text.trim()) fail(`word "${key}" is empty in ${lang}`);
 }
@@ -66,15 +69,18 @@ for (const [name, url] of urls) {
 // control-04, state-transition-06/13: video files, captions in both languages, and the recorded commit.
 oneOf(site.videos.source, ['browser', 'ai-host'], 'videos.source');
 const LIMIT = 25 * 1024 * 1024; // Cloudflare static assets: 25 MiB per file
-const file = (path, what) => {
+const VIDEO = /\.mp4$/, IMAGE = /\.(jpe?g|png|webp|avif)$/, CAPTIONS = /\.vtt$/;
+const file = (path, what, kind) => {
   if (!path) return fail(`${what}: the path is empty`);
+  // Each field has one role; a poster in a captions field would build but never load.
+  if (!kind.test(path)) return fail(`${what}: ${path} is not a ${kind === VIDEO ? '.mp4 video' : kind === IMAGE ? 'image' : '.vtt captions file'}`);
   if (isAbsolute(path) || normalize(path).split(/[\\/]/).includes('..')) return fail(`${what}: ${path} must stay inside public/`);
   // Paths go into URLs as written and prune-media.mjs compares them as text, so allow only plain, already-normalized names.
   if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/.test(path) || path.split('/').includes('.')) return fail(`${what}: ${path} may use only letters, digits, ".", "_", "-" and single "/" between names`);
   const full = `public/${path}`;
   if (!existsSync(full) || !statSync(full).isFile()) return fail(`${what}: ${full} is not a file`);
   if (statSync(full).size > LIMIT) fail(`${what}: ${full} is over 25 MiB`);
-  if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`);
+  if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`, /\.webm$/);
   if (full.endsWith('.vtt')) cueTimes(full, what);
 };
 // Browsers drop a cue whose end is not after its start.
@@ -89,17 +95,17 @@ for (const uc of site.videos.useCases) {
   // A string such as "false" would count as true in the page and in prune-media.mjs.
   if (typeof uc.inPublicBuild !== 'boolean') fail(`use case ${uc.id}: inPublicBuild must be true or false, not ${JSON.stringify(uc.inPublicBuild)}`);
   if (!uc.clip) continue;
-  file(uc.clip, `use case ${uc.id}`);
-  file(uc.poster, `use case ${uc.id} poster`);
-  for (const lang of ['ja', 'en']) file(uc.captions[lang], `use case ${uc.id} captions (${lang})`);
+  file(uc.clip, `use case ${uc.id}`, VIDEO);
+  file(uc.poster, `use case ${uc.id} poster`, IMAGE);
+  for (const lang of ['ja', 'en']) file(uc.captions[lang], `use case ${uc.id} captions (${lang})`, CAPTIONS);
   if (!(`uc.${uc.id}` in ja)) fail(`use case ${uc.id} has no name in the words`);
 }
 const o = site.videos.overview;
-file(o.shortPoster, 'Short poster');
+file(o.shortPoster, 'Short poster', IMAGE);
 // The hero image is fixed in Page.astro rather than in the settings, but it must exist too.
-file('posters/hero.jpg', 'hero image');
+file('posters/hero.jpg', 'hero image', IMAGE);
 if (site.videos.useCases.every(uc => uc.clip && uc.inPublicBuild)) {
-  for (const [p, what] of [[o.short, 'Short'], [o.summary, 'summary'], [o.summaryPoster, 'summary poster'], [o.shortCaptions.ja, 'Short captions (ja)'], [o.shortCaptions.en, 'Short captions (en)'], [o.captions.ja, 'summary captions (ja)'], [o.captions.en, 'summary captions (en)'], [o.chapters.ja, 'chapters (ja)'], [o.chapters.en, 'chapters (en)']]) file(p, what);
+  for (const [p, what, kind] of [[o.short, 'Short', VIDEO], [o.summary, 'summary', VIDEO], [o.summaryPoster, 'summary poster', IMAGE], [o.shortCaptions.ja, 'Short captions (ja)', CAPTIONS], [o.shortCaptions.en, 'Short captions (en)', CAPTIONS], [o.captions.ja, 'summary captions (ja)', CAPTIONS], [o.captions.en, 'summary captions (en)', CAPTIONS], [o.chapters.ja, 'chapters (ja)', CAPTIONS], [o.chapters.en, 'chapters (en)', CAPTIONS]]) file(p, what, kind);
 }
 if (existsSync('public/videos/manifest.json')) {
   const manifest = read('public/videos/manifest.json');

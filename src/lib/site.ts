@@ -13,7 +13,11 @@ const words: Record<Lang, Record<string, string>> = { ja, en };
 export function t(lang: Lang, key: string, vars: Record<string, string> = {}): string {
   const text = words[lang][key];
   if (text === undefined) throw new Error(`Missing ${lang} word: ${key}`);
-  return text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+  // A placeholder with no value is a typo in the words; stop the build rather than print an empty gap.
+  return text.replace(/\{(\w+)\}/g, (_, k) => {
+    if (vars[k] === undefined) throw new Error(`${lang} word ${key} needs a value for {${k}}`);
+    return vars[k];
+  });
 }
 
 // check-content.mjs allows only plain names; encoding each segment keeps a stray reserved character from becoming a query or fragment.

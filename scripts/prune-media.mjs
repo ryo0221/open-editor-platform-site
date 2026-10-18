@@ -16,6 +16,8 @@ if (withheld.length) {
 }
 // Files a public use case still points at stay, even if a withheld one shares them.
 const kept = new Set(site.videos.useCases.filter(uc => uc.inPublicBuild).flatMap(uc => [uc.clip, uc.poster, uc.captions?.ja, uc.captions?.en]).filter(Boolean).map(norm));
+// The Short poster stands in for the Short whenever a use case is withheld, and the hero image is always shown.
+kept.add(norm(site.videos.overview.shortPoster)).add('posters/hero.jpg');
 const removed = [];
 for (const path of files.filter(Boolean).map(norm).filter(p => !kept.has(p))) {
   for (const p of path.endsWith('.mp4') ? [path, path.replace(/\.mp4$/, '.webm')] : [path]) {
