@@ -41,11 +41,19 @@ if (site.claudeCode.status === 'available') {
 }
 
 // control-06, constraint-05: links are https and never point at private repositories.
-const privateRepo = /github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i;
+// Compare the parsed host and path, so ports, case and .git cannot slip a private repository through.
+const isPrivateRepo = value => {
+  try {
+    const u = new URL(value);
+    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase())) return false;
+    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
+    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
+  } catch { return false; }
+};
 const urls = [...Object.entries(site.links), ['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u);
 for (const [name, url] of urls) {
   if (!isHttpsUrl(url)) fail(`${name} is not a complete https URL: ${url}`);
-  if (privateRepo.test(url)) fail(`${name} points at a private repository: ${url}`);
+  if (isPrivateRepo(url)) fail(`${name} points at a private repository: ${url}`);
 }
 
 // control-04, state-transition-06/13: video files, captions in both languages, and the recorded commit.

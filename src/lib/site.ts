@@ -27,7 +27,16 @@ export const claudeCodeAvailable = () => site.claudeCode.status === 'available' 
 export const useCaseReady = (uc: (typeof site.videos.useCases)[number]) => uc.inPublicBuild && uc.clip !== '';
 export const overviewReady = () => site.videos.source !== '' && site.videos.useCases.every(useCaseReady);
 
-export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !/github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\.git)?(\/|$|\?|#)/i.test(url);
+// Same rule as scripts/check-content.mjs: compare the parsed host and path.
+const isPrivateRepo = (value: string) => {
+  try {
+    const u = new URL(value);
+    if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase())) return false;
+    const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => s.toLowerCase());
+    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
+  } catch { return false; }
+};
+export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !isPrivateRepo(url);
 
 // Clip lengths recorded by the video cut (public/videos/manifest.json), keyed by file name.
 const manifest = JSON.parse(readFileSync(join(process.cwd(), 'public/videos/manifest.json'), 'utf8'));
