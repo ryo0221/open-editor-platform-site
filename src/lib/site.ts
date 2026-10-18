@@ -16,7 +16,8 @@ export function t(lang: Lang, key: string, vars: Record<string, string> = {}): s
   return text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 }
 
-export const asset = (path: string) => import.meta.env.BASE_URL.replace(/\/?$/, '/') + path;
+// check-content.mjs allows only plain names; encoding each segment keeps a stray reserved character from becoming a query or fragment.
+export const asset = (path: string) => import.meta.env.BASE_URL.replace(/\/?$/, '/') + path.split('/').map(encodeURIComponent).join('/');
 // Every mp4 has a WebM copy next to it for browsers without H.264.
 export const webm = (path: string) => path.replace(/\.mp4$/, '.webm');
 export const pageUrl = (lang: Lang) => asset(lang === 'ja' ? '' : 'en/');
@@ -36,7 +37,9 @@ const isPrivateRepo = (value: string) => {
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
   } catch { return true; } // unreadable: treat as private
 };
-export const isPublicPaobubUrl = (url: string) => /^https:\/\//.test(url) && !isPrivateRepo(url);
+// Parsed like isHttpsUrl in check-content.mjs, so a spelling it accepts (HTTPS://…) is not hidden here.
+const isHttpsUrl = (value: string) => { try { const u = new URL(value); return u.protocol === 'https:' && !!u.hostname; } catch { return false; } };
+export const isPublicPaobubUrl = (url: string) => isHttpsUrl(url) && !isPrivateRepo(url);
 
 // Clip lengths recorded by the video cut (public/videos/manifest.json), keyed by file name.
 const manifest = JSON.parse(readFileSync(join(process.cwd(), 'public/videos/manifest.json'), 'utf8'));

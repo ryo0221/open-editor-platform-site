@@ -69,10 +69,18 @@ const LIMIT = 25 * 1024 * 1024; // Cloudflare static assets: 25 MiB per file
 const file = (path, what) => {
   if (!path) return fail(`${what}: the path is empty`);
   if (isAbsolute(path) || normalize(path).split(/[\\/]/).includes('..')) return fail(`${what}: ${path} must stay inside public/`);
+  // Paths go into URLs as written and prune-media.mjs compares them as text, so allow only plain, already-normalized names.
+  if (!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/.test(path) || path.split('/').includes('.')) return fail(`${what}: ${path} may use only letters, digits, ".", "_", "-" and single "/" between names`);
   const full = `public/${path}`;
   if (!existsSync(full) || !statSync(full).isFile()) return fail(`${what}: ${full} is not a file`);
   if (statSync(full).size > LIMIT) fail(`${what}: ${full} is over 25 MiB`);
   if (full.endsWith('.mp4')) file(path.replace(/\.mp4$/, '.webm'), `${what} (WebM)`);
+  if (full.endsWith('.vtt')) cueTimes(full, what);
+};
+// Browsers drop a cue whose end is not after its start.
+const cueTimes = (full, what) => {
+  const sec = t => t.split(':').reduce((a, p) => a * 60 + parseFloat(p), 0);
+  for (const [, a, b] of readFileSync(full, 'utf8').matchAll(/^(\S+) --> (\S+)/gm)) if (!(sec(b) > sec(a))) fail(`${what}: the cue ${a} --> ${b} in ${full} ends before it starts`);
 };
 // Ids must be unique: the player looks a card's clip up by id.
 const ids = site.videos.useCases.map(uc => uc.id);
