@@ -50,6 +50,8 @@ function setupShort() {
   toggle.addEventListener('click', () => (video.paused ? video.play().catch(() => {}) : video.pause()));
   const fail = () => { error.hidden = false; toggle.parentElement!.hidden = true; };
   [...video.querySelectorAll('source')].at(-1)?.addEventListener('error', fail);
+  // Every source may already have failed before this script ran.
+  if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) fail();
   // Reduced motion (or a setting that can't be read) means no autoplay; the Play button starts it.
   const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   if (reduce && !reduce.matches) video.play().catch(label);
