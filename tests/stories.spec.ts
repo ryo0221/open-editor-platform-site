@@ -559,7 +559,9 @@ test.describe('story-13 事例から Editor を知る', () => {
     await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図']);
     // Basic is not the same as stable: Structured Graph is a basic editor and still a Preview.
     await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録・Preview');
-    for (const id of ['bim', 'cad', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
+    for (const id of ['bim', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
+    // Specialized is not the same as experimental: CAD was accepted by Ryo on 2026-11-14.
+    await expect(page.locator('[data-editor="cad"] [data-maturity]')).toHaveText('公開版に収録');
     // The editor cut is laid out as cards, two columns on a PC (guards against a stray rule swallowing the styles).
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('display', 'grid');
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('list-style-type', 'none');
