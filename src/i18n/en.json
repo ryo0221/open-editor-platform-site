@@ -231,5 +231,17 @@
   "editor.schematic": "Schematic",
   "editor.schematic.body": "Circuits with symbols, wires and net labels, and circuit calculation",
   "badge.planned": "More planned",
-  "state.planned": "More planned (no date yet)"
+  "state.planned": "More planned (no date yet)",
+  "nav.contribute": "Contribute",
+  "contribute.heading": "Help build it",
+  "contribute.lead": "We are looking not only for users but for people to grow Open Editor Platform with us. Today you can take part in the open-source repository in these ways.",
+  "contribute.issues": "Try it and tell us",
+  "contribute.issues.body": "Try the Playground and open an Issue for bugs you find or features you want.",
+  "contribute.issues.link": "Open or read Issues",
+  "contribute.editors": "Build an editor or a workflow",
+  "contribute.editors.body": "Build an editor or a production workflow for your own field. An independent editor can be developed without sending a PR to the core.",
+  "contribute.editors.link": "Developer guide",
+  "contribute.code": "Improve the core",
+  "contribute.code.body": "Improvement PRs are welcome. Before a code PR is merged, there is a rights check and an agreement with the contributor.",
+  "contribute.code.link": "Contributing guide (CONTRIBUTING)"
 }

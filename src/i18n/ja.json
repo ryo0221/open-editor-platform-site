@@ -231,5 +231,17 @@
   "editor.schematic": "回路図",
   "editor.schematic.body": "記号・配線・ネット名の回路図と回路計算",
   "badge.planned": "今後の対応を予定",
-  "state.planned": "今後の対応を予定（時期は未定）"
+  "state.planned": "今後の対応を予定（時期は未定）",
+  "nav.contribute": "一緒に作る",
+  "contribute.heading": "一緒に作る人を募集しています",
+  "contribute.lead": "使う人だけでなく、Open Editor Platform を一緒に育てる人を探しています。いまはオープンソースのリポジトリで、次の形で参加できます。",
+  "contribute.issues": "試して、知らせる",
+  "contribute.issues.body": "Playground で試して見つけた不具合や、欲しい機能を Issue で教えてください。",
+  "contribute.issues.link": "Issue を見る・書く",
+  "contribute.editors": "Editor や Workflow を作る",
+  "contribute.editors.body": "自分の分野の Editor や制作の手順を作れます。独立した Editor は、本体へ PR を出さなくても開発できます。",
+  "contribute.editors.link": "開発者ガイド",
+  "contribute.code": "本体を改良する",
+  "contribute.code.body": "改善の PR を歓迎します。コードの PR は、取り込む前に権利の確認と、貢献者との合意の手続きがあります。",
+  "contribute.code.link": "貢献の手引き（CONTRIBUTING）"
 }

@@ -29,7 +29,7 @@ const faq = [
   { n: 6, link: site.links.licenseGuide },
   { n: 7 },
 ];
-const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
+const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#contribute', 'nav.contribute'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
 // Purpose cut (top) and editor cut (below): each example names the editors it uses, and each editor
 // carries its own maturity, so "basic / specialized" never stands in for "public / experimental".
 const editorGroups = (['basic', 'specialized'] as const).map(group => ({ group, items: site.editors[group] }));
@@ -222,6 +222,32 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           {[1, 2, 3, 4, 5].map(i => <li>{w(`community.step${i}`)}</li>)}
         </ol>
         <p class="band band-soon" data-community-note>{w('community.note')}</p>
+      </div>
+    </section>
+
+    <section class="section" id="contribute" aria-labelledby="contribute-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="contribute-h">{w('contribute.heading')}</h2>
+          <p>{w('contribute.lead')}</p>
+        </div>
+        <div class="grid3">
+          <div class="card" data-contribute="issues">
+            <h3>{w('contribute.issues')}</h3>
+            <p>{w('contribute.issues.body')}</p>
+            <a class="btn btn-small" href={site.links.issuesCore} {...ext}>{w('contribute.issues.link')}<span class="visually-hidden">{newTab}</span></a>
+          </div>
+          <div class="card" data-contribute="editors">
+            <h3>{w('contribute.editors')}</h3>
+            <p>{w('contribute.editors.body')}</p>
+            <a class="btn btn-small" href={site.links.developerGuide} {...ext}>{w('contribute.editors.link')}<span class="visually-hidden">{newTab}</span></a>
+          </div>
+          <div class="card" data-contribute="code">
+            <h3>{w('contribute.code')}</h3>
+            <p>{w('contribute.code.body')}</p>
+            <a class="btn btn-small" href={site.links.contributing} {...ext}>{w('contribute.code.link')}<span class="visually-hidden">{newTab}</span></a>
+          </div>
+        </div>
       </div>
     </section>
 

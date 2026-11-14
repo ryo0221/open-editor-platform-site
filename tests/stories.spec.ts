@@ -573,3 +573,20 @@ test.describe('story-13 事例から Editor を知る', () => {
     await expect(page.locator('#community .steps')).toHaveCSS('list-style-type', 'none');
   });
 });
+
+test.describe('story-14 一緒に作る', () => {
+  test('test-49 [story-14.criterion-01] the page invites contributors with three ways in, each linking to the public core repository', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    const order = await page.evaluate(() => [...document.querySelectorAll('main section[id]')].map(s => s.id));
+    expect(order.indexOf('contribute')).toBe(order.indexOf('community') + 1);
+    await expect(page.locator('nav a[href="#contribute"]').first()).toHaveText('一緒に作る');
+    await expect(page.locator('[data-contribute] h3')).toHaveText(['試して、知らせる', 'Editor や Workflow を作る', '本体を改良する']);
+    await expect(page.locator('[data-contribute="issues"] a')).toHaveAttribute('href', CORE + '/issues');
+    await expect(page.locator('[data-contribute="editors"] a')).toHaveAttribute('href', DOC('docs/developer-guide.md'));
+    await expect(page.locator('[data-contribute="code"] a')).toHaveAttribute('href', DOC('CONTRIBUTING.md'));
+    for (const a of await page.locator('[data-contribute] a').all()) await expect(a).toHaveAttribute('target', '_blank');
+    // A code PR needs a rights check first (CONTRIBUTOR-LICENSING); the page must not suggest it merges as is.
+    await expect(page.locator('[data-contribute="code"]')).toContainText('権利の確認');
+  });
+});
