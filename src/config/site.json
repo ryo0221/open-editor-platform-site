@@ -30,34 +30,34 @@
         "bim",
         "cad"
       ],
-      "sourceChecked": false,
-      "image": ""
+      "sourceChecked": true,
+      "image": "purposes/building.jpg"
     },
     {
       "id": "car",
       "editors": [
         "cad"
       ],
-      "sourceChecked": false,
-      "image": ""
+      "sourceChecked": true,
+      "image": "purposes/car.jpg"
     },
     {
       "id": "watch",
       "editors": [
         "cad"
       ],
-      "sourceChecked": false,
-      "image": ""
+      "sourceChecked": true,
+      "image": "purposes/watch.jpg"
     },
     {
       "id": "comic",
       "editors": [
         "comic",
         "design",
-        "character"
+        "data"
       ],
-      "sourceChecked": false,
-      "image": ""
+      "sourceChecked": true,
+      "image": "purposes/comic.jpg"
     },
     {
       "id": "novel",

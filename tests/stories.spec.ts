@@ -514,6 +514,29 @@ test.describe('story-12 目的から事例を探す', () => {
   });
 });
 
+test.describe('story-12b 確認済みの事例', () => {
+  test('test-48 [story-12.criterion-02] a checked example shows its image and says where it comes from and that the public build does not include it', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await expect(page.locator('[data-purpose][data-state="ready"]')).toHaveCount(4);
+    await expect(page.locator('[data-purpose][data-state="checking"]')).toHaveCount(1);
+    await expect(page.locator('[data-purpose="novel"]')).toHaveAttribute('data-state', 'checking');
+    for (const id of ['building', 'car', 'watch', 'comic']) {
+      const card = page.locator(`[data-purpose="${id}"]`);
+      const img = card.locator('img');
+      await expect(img).toHaveAttribute('src', new RegExp(`purposes/${id}\\.jpg$`));
+      expect(await img.evaluate(el => el.complete && el.naturalWidth > 0)).toBe(true);
+      await expect(img).toHaveAttribute('alt', /.+：.+/);
+      const note = card.locator('[data-purpose-source]');
+      await expect(note).toContainText('開発版');
+      await expect(note).toContainText('この見本は公開版には含まれていません。');
+      await expect(note).not.toContainText('確認');
+      await expect(card).not.toContainText('421ec42');
+    }
+    await expect(page.locator('[data-purpose="comic"] [data-purpose-source]')).toContainText('画像生成');
+  });
+});
+
 test.describe('story-13 事例から Editor を知る', () => {
   test('test-46 [story-13.criterion-01] each example links to the editors it uses, and the link lands on that editor', async ({ page }) => {
     pcOnly();
