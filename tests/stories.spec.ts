@@ -431,7 +431,7 @@ test.describe('story-10 英語で読む', () => {
     await open(page, '/en/');
     await expect(page.locator('[data-way="hosts"] .status')).toHaveText('Development frozen');
     await expect(page.locator('[data-community-stage]')).toHaveText('In design');
-    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('In the public build, Preview');
+    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('In the public build');
     await expect(page.locator('[data-purpose="watch"] .purpose-case')).toHaveText('The mechanical watch “SK-01”');
     const text = await page.evaluate(() => {
       const clone = document.body.cloneNode(true) as HTMLElement;
@@ -557,8 +557,9 @@ test.describe('story-13 事例から Editor を知る', () => {
     await expect(page.locator('[data-editor-group] h3')).toHaveText(['基本 Editor', '専用 Editor']);
     await expect(page.locator('[data-editor-group="basic"] [data-editor] strong')).toHaveText(['Document', 'Slide', 'Whiteboard', 'Design', 'Structured Data', 'Structured Graph', 'Geo', 'React UI', 'Animation', 'Review / File Viewer']);
     await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図']);
-    // Basic is not the same as stable: Structured Graph is a basic editor and still a Preview.
-    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録・Preview');
+    // Structured Graph left Preview on 2026-11-14 (schema 3, older schemas migrated on read).
+    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録');
+    await expect(page.locator('#editors')).not.toContainText('Preview');
     // Specialized is not the same as experimental: Ryo accepted every specialized editor on 2026-11-14.
     for (const id of ['bim', 'cad', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に収録');
     await expect(page.locator('#editors')).not.toContainText('試験的');
