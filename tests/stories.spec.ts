@@ -489,21 +489,25 @@ test.describe('story-11 スマートフォンで読む', () => {
 });
 
 test.describe('story-12 目的から事例を探す', () => {
-  test('test-44 [story-12.criterion-01] the purpose cut comes first and shows the five agreed examples with their focus', async ({ page }) => {
+  test('test-44 [story-12.criterion-01] the purpose cut comes first and shows the eight agreed examples with their focus', async ({ page }) => {
     pcOnly();
     await open(page);
     const order = await page.evaluate(() => [...document.querySelectorAll('main section[id]')].map(s => s.id));
     expect(order.indexOf('purposes')).toBeLessThan(order.indexOf('editors'));
     expect(order.indexOf('editors')).toBeLessThan(order.indexOf('features'));
     const cards = page.locator('[data-purpose]');
-    await expect(cards.locator('h3')).toHaveText(['建築をつくる', 'クルマをデザインする', '時計をつくる', '漫画をつくる', '小説を書く']);
-    await expect(cards.locator('.purpose-case')).toHaveText(['スカイツリーを題材にした BIM モデル', 'オープンカー「凪」', '機械式時計「SK-01」', '漫画制作プロジェクト', '『関ケ原 — 静かな決断』']);
+    await expect(cards.locator('h3')).toHaveText(['建築をつくる', '工事を計画する', 'クルマをデザインする', '時計をつくる', '回路基板を設計する', '漫画をつくる', '小説を書く', '物語の世界を再現する']);
+    await expect(cards.locator('.purpose-case')).toHaveText(['スカイツリーを題材にした BIM モデル', 'オフィスビルの工事現場のデジタルツイン', 'オープンカー「凪」', '機械式時計「SK-01」', 'センサー拡張基板と回路図', '漫画制作プロジェクト', '『関ケ原 — 静かな決断』', '『ガリヴァー旅行記』のデジタルツイン']);
     await expect(page.locator('[data-purpose="watch"]')).toContainText('部品、組立・分解、歯車と機構の動き');
   });
 
   test('test-45 [story-12.criterion-02] an example whose material is not checked shows that, with no image and no café-video note', async ({ page }) => {
     pcOnly();
-    await open(page);
+    // The variant build leaves every example unchecked.
+    await open(page, VARIANT + '/');
+    await expect(page.locator('[data-purpose][data-state="checking"]')).toHaveCount(8);
+    // and an unchecked example's image is not shipped at all.
+    expect((await page.request.get(`${VARIANT}/purposes/novel.jpg`)).status()).toBe(404);
     for (const card of await page.locator('[data-purpose][data-state="checking"]').all()) {
       await expect(card.locator('img')).toHaveCount(0);
       await expect(card.locator('[data-purpose-source]')).toHaveText('この事例の画像と、どこまで公開版で確かめられるかを確認してから載せます。');
@@ -518,10 +522,8 @@ test.describe('story-12b 確認済みの事例', () => {
   test('test-48 [story-12.criterion-02] a checked example shows its image and says where it comes from and that the public build does not include it', async ({ page }) => {
     pcOnly();
     await open(page);
-    await expect(page.locator('[data-purpose][data-state="ready"]')).toHaveCount(4);
-    await expect(page.locator('[data-purpose][data-state="checking"]')).toHaveCount(1);
-    await expect(page.locator('[data-purpose="novel"]')).toHaveAttribute('data-state', 'checking');
-    for (const id of ['building', 'car', 'watch', 'comic']) {
+    await expect(page.locator('[data-purpose][data-state="ready"]')).toHaveCount(8);
+    for (const id of ['building', 'construction', 'car', 'watch', 'pcb', 'comic', 'novel', 'gulliver']) {
       const card = page.locator(`[data-purpose="${id}"]`);
       const img = card.locator('img');
       await expect(img).toHaveAttribute('src', new RegExp(`purposes/${id}\\.jpg$`));
@@ -533,7 +535,8 @@ test.describe('story-12b 確認済みの事例', () => {
       await expect(note).not.toContainText('確認');
       await expect(card).not.toContainText('421ec42');
     }
-    await expect(page.locator('[data-purpose="comic"] [data-purpose-source]')).toContainText('画像生成');
+    for (const id of ['comic', 'novel']) await expect(page.locator(`[data-purpose="${id}"] [data-purpose-source]`)).toContainText('画像生成');
+    await expect(page.locator('[data-purpose="gulliver"] [data-purpose-source]')).toContainText('パブリックドメイン');
   });
 });
 

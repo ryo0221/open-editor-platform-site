@@ -34,6 +34,16 @@
       "image": "purposes/building.jpg"
     },
     {
+      "id": "construction",
+      "editors": [
+        "bim",
+        "cad",
+        "data"
+      ],
+      "sourceChecked": true,
+      "image": "purposes/construction.jpg"
+    },
+    {
       "id": "car",
       "editors": [
         "cad"
@@ -48,6 +58,14 @@
       ],
       "sourceChecked": true,
       "image": "purposes/watch.jpg"
+    },
+    {
+      "id": "pcb",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": true,
+      "image": "purposes/pcb.jpg"
     },
     {
       "id": "comic",
@@ -65,8 +83,20 @@
         "novel",
         "document"
       ],
-      "sourceChecked": false,
-      "image": ""
+      "sourceChecked": true,
+      "image": "purposes/novel.jpg"
+    },
+    {
+      "id": "gulliver",
+      "editors": [
+        "fictionMap",
+        "bim",
+        "cad",
+        "character",
+        "novel"
+      ],
+      "sourceChecked": true,
+      "image": "purposes/gulliver.jpg"
     }
   ],
   "editors": {

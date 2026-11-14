@@ -1,7 +1,7 @@
 // Removes withheld media from the build output, so a use case with inPublicBuild false cannot be fetched by its URL.
 // The Short and the summary contain every step, so they go too whenever any use case is withheld.
 // Usage: node scripts/prune-media.mjs [outDir]   (reads SITE_CONFIG like the build)
-import { readFileSync, rmSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { posix, relative, resolve } from 'node:path';
 
 const outDir = process.argv[2] ?? 'dist';
@@ -27,5 +27,11 @@ for (const path of files.filter(Boolean).map(norm).filter(p => !kept.has(p))) {
     rmSync(target, { force: true });
     removed.push(p);
   }
+}
+// Example images ship only for examples whose material has been checked (05, sourceChecked).
+const shown = new Set((site.purposes ?? []).filter(p => p.sourceChecked && p.image).map(p => norm(p.image)));
+const purposeDir = resolve(outDir, 'purposes');
+if (existsSync(purposeDir)) for (const name of readdirSync(purposeDir)) {
+  if (!shown.has(`purposes/${name}`)) { rmSync(resolve(purposeDir, name), { force: true }); removed.push(`purposes/${name}`); }
 }
 console.log(removed.length ? `Withheld media removed from ${outDir}: ${removed.join(', ')}` : 'No withheld media');

@@ -136,7 +136,7 @@ for (const group of ['basic', 'specialized']) {
 }
 if (!site.editors?.basic?.length || !site.editors?.specialized?.length) fail('editors.basic and editors.specialized must both list editors');
 const purposeIds = (site.purposes ?? []).map(p => p.id);
-if (purposeIds.length !== 5) fail(`purposes must list the five agreed examples, found ${purposeIds.length}`);
+if (purposeIds.length !== 8) fail(`purposes must list the eight agreed examples, found ${purposeIds.length}`);
 for (const p of site.purposes ?? []) {
   if (purposeIds.indexOf(p.id) !== purposeIds.lastIndexOf(p.id)) fail(`purpose "${p.id}" is listed twice`);
   for (const key of ['title', 'case', 'focus', 'source']) if (!(`purposes.${p.id}.${key}` in ja)) fail(`purpose ${p.id} has no word purposes.${p.id}.${key}`);

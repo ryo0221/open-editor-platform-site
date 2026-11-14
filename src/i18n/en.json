@@ -170,7 +170,7 @@
   "purposes.car.source": "A screen of the open car “Nagi”, made with the CAD editor of the development build. This sample is not in the public build.",
   "purposes.watch.source": "The SK-01 assembly and exploded view, made with the CAD editor of the development build. This sample is not in the public build.",
   "purposes.comic.source": "Finished pages of a four-page one-shot, made step by step with PaoBub and the development build of Editor Platform. The art uses image generation, with the tools and terms recorded. This sample is not in the public build.",
-  "purposes.novel.source": "Checking the material and its scope.",
+  "purposes.novel.source": "The scene board of a historical novel (five chapters, ten scenes), made in the Playground of the development build. The setting art uses image generation. This sample is not in the public build.",
   "purposes.imageAlt": "{name}: {case}",
   "editors.heading": "Get to know the editors",
   "editors.lead": "Every example combines editors, one for each kind of thing being edited. Maturity and limits differ by editor; check them in Status and limits.",
@@ -213,5 +213,17 @@
   "editor.novel": "Novel",
   "editor.novel.body": "Setting, structure and text, on the same manuscript as Document",
   "editor.fictionMap": "Fiction Map",
-  "editor.fictionMap.body": "Maps of a story's world"
+  "editor.fictionMap.body": "Maps of a story's world",
+  "purposes.construction.title": "Plan construction",
+  "purposes.construction.case": "A digital twin of an office building site",
+  "purposes.construction.focus": "The schedule, crane lifts, day-by-day progress, up to topping out",
+  "purposes.construction.source": "A screen from a construction-site digital twin (the topping-out day), made with the BIM and CAD editors of the development build. This sample is not in the public build.",
+  "purposes.pcb.title": "Design a circuit board",
+  "purposes.pcb.case": "A sensor add-on board and its schematic",
+  "purposes.pcb.focus": "Schematic, parts and traces, design-rule checks, the board in 3D",
+  "purposes.pcb.source": "A 3D view of a circuit board made with the CAD editor of the development build. This sample is not in the public build.",
+  "purposes.gulliver.title": "Recreate a story's world",
+  "purposes.gulliver.case": "A digital twin of Gulliver's Travels",
+  "purposes.gulliver.focus": "Fictional maps, the city of Lilliput, characters, the text and scene videos",
+  "purposes.gulliver.source": "The world of Gulliver's Travels (public domain), recreated with the fiction map, BIM, CAD and Character editors of the development build. This sample is not in the public build."
 }

@@ -34,6 +34,16 @@
       "image": ""
     },
     {
+      "id": "construction",
+      "editors": [
+        "bim",
+        "cad",
+        "data"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
       "id": "car",
       "editors": [
         "cad"
@@ -43,6 +53,14 @@
     },
     {
       "id": "watch",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "pcb",
       "editors": [
         "cad"
       ],
@@ -64,6 +82,18 @@
       "editors": [
         "novel",
         "document"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "gulliver",
+      "editors": [
+        "fictionMap",
+        "bim",
+        "cad",
+        "character",
+        "novel"
       ],
       "sourceChecked": false,
       "image": ""
