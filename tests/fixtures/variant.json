@@ -2,13 +2,13 @@
   "hosts": {
     "claudeCode": {
       "access": "released-preview",
-      "development": "frozen",
+      "development": "planned",
       "version": "0.1.5",
       "releaseUrl": "https://github.com/ryo0221/editor-platform-plugins/releases/tag/v0.1.5"
     },
     "codex": {
       "access": "reference-only",
-      "development": "frozen"
+      "development": "planned"
     }
   },
   "embedding": {

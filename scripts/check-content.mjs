@@ -31,17 +31,17 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 }
 
 // control-01: the provision state comes only from the settings (05 提供状態, 2026-11 改訂).
-// Availability and development are separate fields, so a frozen integration is never shown as withdrawn,
-// and the embedding API is never shown as frozen. Only the states the page has words for are allowed.
+// Availability and development are separate fields. Host integrations have more work planned (Ryo 2026-11-14,
+// replacing "frozen"); no date is promised, so no 準備中 / Coming soon wording. Only the states the page has words for are allowed.
 const oneOf = (value, allowed, name) => { if (!allowed.includes(value)) fail(`${name} is "${value}", expected one of ${allowed.join(', ')}`); };
 const isHttpsUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' && !!u.hostname; } catch { return false; } };
 const cc = site.hosts?.claudeCode ?? {};
 oneOf(cc.access, ['released-preview'], 'hosts.claudeCode.access');
-oneOf(cc.development, ['frozen'], 'hosts.claudeCode.development');
+oneOf(cc.development, ['planned'], 'hosts.claudeCode.development');
 if (!/^\d+\.\d+\.\d+$/.test(cc.version ?? '')) fail(`hosts.claudeCode.version is "${cc.version}", expected x.y.z`);
 if (!isHttpsUrl(cc.releaseUrl) || !String(cc.releaseUrl).endsWith(`/releases/tag/v${cc.version}`)) fail(`hosts.claudeCode.releaseUrl must be the https release page of v${cc.version}: ${cc.releaseUrl}`);
 oneOf(site.hosts?.codex?.access, ['reference-only'], 'hosts.codex.access');
-oneOf(site.hosts?.codex?.development, ['frozen'], 'hosts.codex.development');
+oneOf(site.hosts?.codex?.development, ['planned'], 'hosts.codex.development');
 oneOf(site.embedding?.access, ['public-docs'], 'embedding.access');
 oneOf(site.embedding?.development, ['active'], 'embedding.development');
 // The page has words only for the design stage; launch words and the link come with the launch (05 state-transition).

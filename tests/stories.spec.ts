@@ -204,7 +204,7 @@ test.describe('story-03 手元で試し、ソースを読む', () => {
 });
 
 test.describe('story-04 AI ホストとの連携の今の状態を知る', () => {
-  test('test-13 [story-04.criterion-01] the host card says development is frozen, and no retired state or ChatGPT appears', async ({ page }) => {
+  test('test-13 [story-04.criterion-01] the host card says more work is planned, and no retired state or ChatGPT appears', async ({ page }) => {
     pcOnly();
     for (const [path, words] of [['/', /配布準備中|Coming soon／準備中|準備中（Coming soon）|ChatGPT/], ['/en/', /Preparing release|Coming soon: |ChatGPT/]] as const) {
       await open(page, path);
@@ -213,8 +213,9 @@ test.describe('story-04 AI ホストとの連携の今の状態を知る', () =>
     }
     await open(page);
     const card = page.locator('[data-way="hosts"]');
-    await expect(card.locator('h3')).toHaveText('AI ホストとの連携（参考）');
-    await expect(card.locator('.status')).toHaveText('開発凍結');
+    await expect(card.locator('h3')).toHaveText('AI ホストとの連携');
+    await expect(card.locator('.status')).toHaveText('今後の対応を予定');
+    await expect(page.locator('body')).not.toContainText('凍結');
     await expect(page.locator('[data-way="codex"], [data-way="claudeCode"], [data-way="chatgpt"]')).toHaveCount(0);
   });
 
@@ -225,9 +226,9 @@ test.describe('story-04 AI ホストとの連携の今の状態を知る', () =>
     await opener.click();
     const panel = page.locator('#panel-hosts');
     await expect(panel).toBeVisible();
-    await expect(panel.locator('thead th')).toHaveText(['AI ホストとの連携（参考）', '入手・利用', '開発']);
-    await expect(panel.locator('[data-host="claudeCode"] td')).toHaveText(['既存プレビュー版 v0.1.5 の配布あり', '新規開発・本体への追随を凍結']);
-    await expect(panel.locator('[data-host="codex"] td')).toHaveText(['参考実装あり・一般配布なし', '新規開発・本体への追随を凍結']);
+    await expect(panel.locator('thead th')).toHaveText(['AI ホストとの連携', '入手・利用', '開発']);
+    await expect(panel.locator('[data-host="claudeCode"] td')).toHaveText(['既存プレビュー版 v0.1.5 の配布あり', '今後の対応を予定（時期は未定）']);
+    await expect(panel.locator('[data-host="codex"] td')).toHaveText(['参考実装あり・一般配布なし', '今後の対応を予定（時期は未定）']);
     await page.keyboard.press('Escape');
     await expect(panel).toBeHidden();
     await expect(opener).toBeFocused();
@@ -384,14 +385,14 @@ test.describe('story-08 不安な点を FAQ で確かめる', () => {
 });
 
 test.describe('story-09 ソースを読み、不具合や要望を伝える', () => {
-  test('test-28 [story-09.criterion-01] the footer links the core, status, guide, license and the frozen plugins, with no email address', async ({ page }) => {
+  test('test-28 [story-09.criterion-01] the footer links the core, status, guide, license and the plugins, with no email address', async ({ page }) => {
     pcOnly();
     await open(page);
     const footer = page.locator('footer');
     for (const href of [CORE, DOC('docs/status.md'), DOC('docs/developer-guide.md'), DOC('LICENSE'), 'https://github.com/ryo0221/editor-platform-plugins']) {
       await expect(footer.locator(`a[href="${href}"]`)).toHaveCount(1);
     }
-    await expect(footer.getByRole('link', { name: /GitHub（plugins・開発凍結）/ })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /^GitHub（plugins）/ })).toBeVisible();
     await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
     expect(await page.locator('body').innerText()).not.toMatch(/[\w.+-]+@[\w-]+\.[\w.]+/);
   });
@@ -429,7 +430,7 @@ test.describe('story-10 英語で読む', () => {
   test('test-31 [story-10.criterion-02] the English page uses the agreed terms and no Japanese outside marked parts', async ({ page }) => {
     pcOnly();
     await open(page, '/en/');
-    await expect(page.locator('[data-way="hosts"] .status')).toHaveText('Development frozen');
+    await expect(page.locator('[data-way="hosts"] .status')).toHaveText('More planned');
     await expect(page.locator('[data-community-stage]')).toHaveText('In design');
     await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('In the public build');
     await expect(page.locator('[data-purpose="watch"] .purpose-case')).toHaveText('The mechanical watch “SK-01”');
@@ -466,7 +467,7 @@ test.describe('story-11 スマートフォンで読む', () => {
     await open(page);
     const boxes = await page.locator('[data-way]').evaluateAll(els => els.map(e => e.getBoundingClientRect()));
     for (let i = 1; i < boxes.length; i++) expect(boxes[i].top).toBeGreaterThan(boxes[i - 1].bottom - 1);
-    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済みの範囲を案内', '開発凍結']);
+    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済みの範囲を案内', '今後の対応を予定']);
   });
 
   test('test-35 [story-11.criterion-01] picking a section in the phone menu closes the menu', async ({ page }) => {

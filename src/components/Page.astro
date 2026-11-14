@@ -13,7 +13,7 @@ const paobubUrl = isPublicPaobubUrl(site.paobub.url) ? site.paobub.url : '';
 const note = w('features.notePlayground');
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const newTab = w('footer.newTab');
-// 05 提供状態 (2026-11 改訂): availability and development are separate, so "frozen" never reads as "withdrawn".
+// 05 提供状態 (2026-11 改訂): availability and development are separate fields.
 const cc = site.hosts.claudeCode;
 const v = { version: cc.version };
 const hostRows = [
@@ -203,7 +203,7 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           </div>
           <div class="card" data-way="hosts">
             <h3>{w('ways.hosts')}</h3>
-            <p><span class="status status-frozen">{w('badge.frozen')}</span></p>
+            <p><span class="status status-planned">{w('badge.planned')}</span></p>
             <p>{w('ways.hosts.body')}</p>
             <button class="btn btn-small" type="button" data-open="panel-hosts">{w('ways.hosts.button')}</button>
           </div>
