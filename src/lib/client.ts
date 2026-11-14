@@ -127,17 +127,6 @@ function setupPlayer(data: Data) {
   }
 }
 
-function setupCopy() {
-  const btn = $<HTMLButtonElement>('[data-copy]');
-  if (!btn) return;
-  const original = btn.textContent;
-  btn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText($<HTMLElement>('[data-prompt]')!.textContent ?? '');
-    btn.textContent = btn.dataset.copied!;
-    setTimeout(() => { btn.textContent = original; }, 2000);
-  });
-}
-
 // On phones the menu drops down over the page, so picking a section closes it.
 function setupMenu() {
   const menu = $<HTMLDetailsElement>('details.menu');
@@ -156,7 +145,6 @@ export function setup() {
   setupDialogs();
   setupShort();
   setupPlayer(data);
-  setupCopy();
   setupMenu();
   setupLangSwitch();
 }

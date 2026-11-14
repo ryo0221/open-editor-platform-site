@@ -23,7 +23,7 @@ npm run preview    # http://localhost:4321
 ```sh
 npx playwright install chromium   # once, for the browser tests (or set CHROMIUM_PATH to an existing Chromium)
 npm run check      # types (astro check) + content check
-npm test           # browser tests at PC and phone width, against dist/ and a post-release build
+npm test           # browser tests at PC and phone width, against dist/ and a variant build (tests/fixtures/variant.json)
 npm run links      # every external link returns 200
 ```
 

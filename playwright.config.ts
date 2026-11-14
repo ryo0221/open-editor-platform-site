@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // Tests run against the built site served as static files (stage-01 in 09 環境ごとの公開計画).
-// The second server serves the same page built from tests/fixtures/after-release.json.
+// The second server serves the same page built from tests/fixtures/variant.json.
 const chromium = process.env.CHROMIUM_PATH;
 export default defineConfig({
   testDir: 'tests',

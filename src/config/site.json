@@ -1,28 +1,30 @@
 {
-  "claudeCode": {
-    "status": "preparing",
-    "releaseUrl": "",
-    "editors": [],
-    "requirements": {
-      "ja": "",
-      "en": ""
+  "hosts": {
+    "claudeCode": {
+      "access": "released-preview",
+      "development": "frozen",
+      "version": "0.1.5",
+      "releaseUrl": "https://github.com/ryo0221/editor-platform-plugins/releases/tag/v0.1.5"
+    },
+    "codex": {
+      "access": "reference-only",
+      "development": "frozen"
     }
   },
-  "claudeDesktop": {
-    "status": "preview"
-  },
-  "codex": {
-    "status": "coming-soon"
-  },
   "embedding": {
-    "status": "coming-soon"
+    "access": "public-docs",
+    "development": "active"
+  },
+  "community": {
+    "stage": "design",
+    "url": ""
   },
   "paobub": {
     "url": "",
     "clip": ""
   },
   "videos": {
-    "source": "ai-host",
+    "source": "playground",
     "commit": "421ec42",
     "overview": {
       "short": "videos/story-short.mp4",
@@ -135,10 +137,15 @@
   },
   "links": {
     "core": "https://github.com/ryo0221/open-editor-platform",
-    "plugins": "https://github.com/ryo0221/editor-platform-plugins",
+    "run": "https://github.com/ryo0221/open-editor-platform#run",
+    "status": "https://github.com/ryo0221/open-editor-platform/blob/main/docs/status.md",
     "developerGuide": "https://github.com/ryo0221/open-editor-platform/blob/main/docs/developer-guide.md",
+    "embedding": "https://github.com/ryo0221/open-editor-platform/blob/main/docs/embedding.md",
+    "hostIntegration": "https://github.com/ryo0221/open-editor-platform/blob/main/docs/host-integration.md",
     "license": "https://github.com/ryo0221/open-editor-platform/blob/main/LICENSE",
+    "licenseGuide": "https://github.com/ryo0221/open-editor-platform/blob/main/LICENSE-GUIDE.md",
     "commercialLicense": "https://github.com/ryo0221/open-editor-platform/blob/main/COMMERCIAL-LICENSING.md",
+    "plugins": "https://github.com/ryo0221/editor-platform-plugins",
     "issuesSite": "https://github.com/ryo0221/open-editor-platform-site/issues",
     "issuesCore": "https://github.com/ryo0221/open-editor-platform/issues",
     "issuesPlugins": "https://github.com/ryo0221/editor-platform-plugins/issues"

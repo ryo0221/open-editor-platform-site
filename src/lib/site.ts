@@ -26,8 +26,6 @@ export const asset = (path: string) => import.meta.env.BASE_URL.replace(/\/?$/, 
 export const webm = (path: string) => path.replace(/\.mp4$/, '.webm');
 export const pageUrl = (lang: Lang) => asset(lang === 'ja' ? '' : 'en/');
 
-export const claudeCodeAvailable = () => site.claudeCode.status === 'available' && site.claudeCode.releaseUrl !== '';
-
 // The Short and the summary contain every step, so they show only when all eight use cases can play.
 export const useCaseReady = (uc: (typeof site.videos.useCases)[number]) => uc.inPublicBuild && uc.clip !== '';
 export const overviewReady = () => site.videos.source !== '' && site.videos.useCases.every(useCaseReady);

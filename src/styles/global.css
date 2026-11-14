@@ -54,7 +54,6 @@ img, video { max-width: 100%; height: auto; display: block; }
 /* Buttons (component-03) */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 8px; border: 2px solid var(--accent); background: var(--surface); color: var(--accent); font: inherit; font-size: var(--body); font-weight: 700; text-decoration: none; cursor: pointer; }
 .btn-primary { min-height: 56px; background: var(--accent); color: var(--on-accent); }
-.btn-preparing { min-height: 56px; background: var(--wait-soft); color: var(--wait); border-color: var(--wait); }
 .btn-small { min-height: 36px; padding: 0 12px; font-size: var(--small); }
 .btn-link { border: 0; background: none; padding: 0; min-height: 36px; color: var(--accent); text-decoration: underline; font-weight: 400; }
 
@@ -100,7 +99,6 @@ img, video { max-width: 100%; height: auto; display: block; }
 @media (max-width: 639px) { .grid3, .grid4 { grid-template-columns: 1fr; } }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: grid; gap: 12px; align-content: start; }
 .card p { color: var(--ink-soft); font-size: var(--small); }
-.editors { margin-top: 24px; font-size: var(--small); }
 
 /* Features and videos (screen-04) */
 .short { display: grid; gap: 12px; margin-bottom: 40px; }
@@ -117,21 +115,25 @@ img, video { max-width: 100%; height: auto; display: block; }
 .uc-pending { aspect-ratio: 16 / 10; display: grid; place-items: center; background: var(--soon-soft); color: var(--soon); font-size: var(--small); border-bottom: 1px solid var(--line); }
 .summary-row { margin-top: 32px; }
 
-/* Ways to use (screen-05) */
-.way-main { border: 2px solid var(--accent); }
+/* Try, embed, connect (screen-05) */
+.status-frozen { color: var(--ink-soft); background: var(--surface); }
+.states { width: 100%; border-collapse: collapse; font-size: var(--small); margin-bottom: 16px; }
+.states th, .states td { text-align: left; vertical-align: top; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.links { padding-left: 20px; display: grid; gap: 8px; }
+.domains { margin-top: 48px; display: grid; gap: 12px; }
+.domains dl { display: grid; gap: 12px; margin: 0; }
+.domains dl div { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+@media (max-width: 639px) { .domains dl div { grid-template-columns: 1fr; } }
+.domains dd { margin: 0; color: var(--ink-soft); font-size: var(--small); }
 
-/* Get started (screen-06) */
+/* Steps and bands (community, screen-06) */
 .steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 8px; counter-reset: step; }
 .steps li { counter-increment: step; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
 .steps li::before { content: counter(step) '. '; font-weight: 700; }
-.steps.is-preparing li { color: var(--soon); background: var(--soon-soft); }
 .band { border-radius: 8px; padding: 12px 16px; border: 1px solid currentColor; }
-.band-preparing { color: var(--wait); background: var(--wait-soft); }
+.community .band { margin-top: 24px; }
 .band-soon { color: var(--soon); background: var(--soon-soft); }
 .band-now { color: var(--ok); background: var(--ok-soft); }
-.copy { display: flex; gap: 12px; align-items: center; margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
-.copy code { font-family: var(--mono); font-size: var(--small); flex: 1; }
-.desktop { margin-top: 24px; background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; padding: 12px 16px; font-size: var(--small); }
 
 /* PaoBub (screen-07) */
 .paobub { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -142,7 +144,7 @@ img, video { max-width: 100%; height: auto; display: block; }
 .faq summary { cursor: pointer; padding: 16px 20px; font-weight: 700; min-height: 48px; }
 .faq details[open] summary { border-bottom: 1px solid var(--line); }
 .faq details p { padding: 16px 20px; color: var(--ink-soft); }
-.faq .faq-note { font-size: var(--small); color: var(--ink-soft); margin-top: 16px; }
+.faq details p + p { padding-top: 0; }
 
 /* Footer (screen-09) */
 .footer { background: var(--ink); color: var(--on-accent); padding: 48px 0; font-size: var(--small); }

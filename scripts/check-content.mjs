@@ -24,29 +24,34 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 
 // control-02, constraint-09: no dates, prices or claims about things that are not decided.
 const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€£₩₹]\s*\d/, /\b(USD|EUR|JPY|GBP)\s*\d/i, /\d\s*(dollars?|euros?|pounds?|yen|USD|EUR|JPY|GBP)\b/i, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
-// The release requirements are free text rendered on the page, so they get the same scan as the words.
-const requirements = Object.fromEntries(Object.entries(site.claudeCode.requirements ?? {}).map(([lang, text]) => [`claudeCode.requirements.${lang}`, text]));
-for (const [lang, words] of [['ja', ja], ['en', en], ['settings', requirements]]) {
+for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) {
     for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
   }
 }
 
-// control-01: the provision state comes only from the settings.
+// control-01: the provision state comes only from the settings (05 提供状態, 2026-11 改訂).
+// Availability and development are separate fields, so a frozen integration is never shown as withdrawn,
+// and the embedding API is never shown as frozen. Only the states the page has words for are allowed.
 const oneOf = (value, allowed, name) => { if (!allowed.includes(value)) fail(`${name} is "${value}", expected one of ${allowed.join(', ')}`); };
-oneOf(site.claudeCode.status, ['preparing', 'available'], 'claudeCode.status');
-// Only the preview words exist for Claude Desktop; 05 state-transition-05 adds words before it can become available.
-oneOf(site.claudeDesktop.status, ['preview', 'hidden'], 'claudeDesktop.status');
-// The page only has Coming soon words for these; 05 state-transition-03/04 add release words first, then allow available here.
-for (const k of ['codex', 'embedding']) oneOf(site[k].status, ['coming-soon'], `${k}.status`);
 const isHttpsUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' && !!u.hostname; } catch { return false; } };
-// Editors are listed only once they are checked on the released plugin (story-04).
-if (site.claudeCode.status !== 'available' && site.claudeCode.editors.length) fail('claudeCode.editors must stay empty until claudeCode.status is available');
-if (site.claudeCode.status === 'available') {
-  if (!isHttpsUrl(site.claudeCode.releaseUrl)) fail('claudeCode.status is available but releaseUrl is not an https URL');
-  if (!site.claudeCode.editors.length) fail('claudeCode.status is available but editors is empty');
-  // The preparing notice promises the requirements at release, so both languages need them.
-  for (const lang of ['ja', 'en']) if (!site.claudeCode.requirements[lang]?.trim()) fail(`claudeCode.status is available but requirements.${lang} is empty`);
+const cc = site.hosts?.claudeCode ?? {};
+oneOf(cc.access, ['released-preview'], 'hosts.claudeCode.access');
+oneOf(cc.development, ['frozen'], 'hosts.claudeCode.development');
+if (!/^\d+\.\d+\.\d+$/.test(cc.version ?? '')) fail(`hosts.claudeCode.version is "${cc.version}", expected x.y.z`);
+if (!isHttpsUrl(cc.releaseUrl) || !String(cc.releaseUrl).endsWith(`/releases/tag/v${cc.version}`)) fail(`hosts.claudeCode.releaseUrl must be the https release page of v${cc.version}: ${cc.releaseUrl}`);
+oneOf(site.hosts?.codex?.access, ['reference-only'], 'hosts.codex.access');
+oneOf(site.hosts?.codex?.development, ['frozen'], 'hosts.codex.development');
+oneOf(site.embedding?.access, ['public-docs'], 'embedding.access');
+oneOf(site.embedding?.development, ['active'], 'embedding.development');
+// The page has words only for the design stage; launch words and the link come with the launch (05 state-transition).
+oneOf(site.community?.stage, ['design'], 'community.stage');
+if (site.community?.url) fail('community.url must stay empty while community.stage is design (the repository is private)');
+// No word may bring back the retired preparing / Coming soon promises or ChatGPT (2026-10-18, 2026-11-14 Ryo).
+for (const [lang, words] of [['ja', ja], ['en', en]]) {
+  for (const [key, text] of Object.entries(words)) {
+    if (/配布準備中|Preparing release|Coming soon|ChatGPT/.test(text) && key !== 'badge.soon' && !key.startsWith('uc.') && key !== 'features.preparing') fail(`word "${key}" (${lang}) uses a retired state: ${text}`);
+  }
 }
 
 // control-06, constraint-05: links are https and never point at private repositories.
@@ -59,15 +64,16 @@ const isPrivateRepo = value => {
     return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
   } catch { return true; } // unreadable: treat as private
 };
-// Every site link is required; only the PaoBub and release URLs may stay empty before their release.
-const urls = [...Object.entries(site.links), ...[['paobub.url', site.paobub.url], ['claudeCode.releaseUrl', site.claudeCode.releaseUrl]].filter(([, u]) => u)];
+// Every site link is required; only the PaoBub URL may stay empty before its release.
+const urls = [...Object.entries(site.links), ['hosts.claudeCode.releaseUrl', cc.releaseUrl], ...[['paobub.url', site.paobub.url]].filter(([, u]) => u)];
 for (const [name, url] of urls) {
   if (!isHttpsUrl(url)) fail(`${name} is not a complete https URL: ${url}`);
   if (isPrivateRepo(url)) fail(`${name} points at a private repository: ${url}`);
 }
 
 // control-04, state-transition-06/13: video files, captions in both languages, and the recorded commit.
-oneOf(site.videos.source, ['browser', 'ai-host'], 'videos.source');
+// The clips were recorded by running Playground steps automatically (2026-11-14 Ryo); the page has words for that source only.
+oneOf(site.videos.source, ['playground'], 'videos.source');
 const LIMIT = 25 * 1024 * 1024; // Cloudflare static assets: 25 MiB per file
 const VIDEO = /\.mp4$/, IMAGE = /\.(jpe?g|png|webp|avif)$/, CAPTIONS = /\.vtt$/;
 const file = (path, what, kind) => {

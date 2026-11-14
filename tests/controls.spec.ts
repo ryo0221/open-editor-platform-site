@@ -10,9 +10,11 @@ test('test-37 [control-09] no WCAG 2.2 AA violations on either page, with and wi
     const axe = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
     expect((await axe()).violations.map(v => `${v.id}: ${v.nodes.map(n => n.target).join(' ')}`)).toEqual([]);
     if (test.info().project.name === 'pc') {
-      await page.locator('[data-way="embedding"] button').click();
-      expect((await axe()).violations.map(v => v.id)).toEqual([]);
-      await page.keyboard.press('Escape');
+      for (const way of ['embedding', 'hosts']) {
+        await page.locator(`[data-way="${way}"] button`).click();
+        expect((await axe()).violations.map(v => v.id)).toEqual([]);
+        await page.keyboard.press('Escape');
+      }
       await page.locator('[data-play-uc="goal"]').click();
       expect((await axe()).violations.map(v => v.id)).toEqual([]);
     }
@@ -70,17 +72,20 @@ test('test-41 [control-06] external links are https, open in a new tab with noop
   }
 });
 
-test('test-42 [control-09] keyboard alone reaches the main button, opens the panel and returns focus on Esc', async ({ page }) => {
+test('test-42 [control-09] keyboard alone reaches the main button and the host panel, and Esc returns focus', async ({ page }) => {
   test.skip(test.info().project.name !== 'pc', 'checked at PC width');
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  let found = false;
-  for (let i = 0; i < 15 && !found; i++) {
-    await page.keyboard.press('Tab');
-    found = await page.locator('[data-cta]').evaluate(el => el === document.activeElement);
-  }
-  expect(found).toBe(true);
+  const tabTo = async (selector: string, max: number) => {
+    for (let i = 0; i < max; i++) {
+      await page.keyboard.press('Tab');
+      if (await page.locator(selector).evaluate(el => el === document.activeElement)) return true;
+    }
+    return false;
+  };
+  expect(await tabTo('[data-cta]', 15)).toBe(true);
+  expect(await tabTo('[data-way="hosts"] button', 40)).toBe(true);
   await page.keyboard.press('Enter');
-  await expect(page.locator('#panel-claude-code')).toBeVisible();
+  await expect(page.locator('#panel-hosts')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.locator('[data-cta]')).toBeFocused();
+  await expect(page.locator('[data-way="hosts"] button')).toBeFocused();
 });
