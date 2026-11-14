@@ -37,8 +37,8 @@
       "id": "construction",
       "editors": [
         "bim",
-        "cad",
-        "data"
+        "construction",
+        "cad"
       ],
       "sourceChecked": false,
       "image": ""
@@ -62,6 +62,8 @@
     {
       "id": "pcb",
       "editors": [
+        "pcb",
+        "schematic",
         "cad"
       ],
       "sourceChecked": false,
@@ -166,6 +168,18 @@
       {
         "id": "fictionMap",
         "maturity": "included"
+      },
+      {
+        "id": "construction",
+        "maturity": "experimental"
+      },
+      {
+        "id": "pcb",
+        "maturity": "experimental"
+      },
+      {
+        "id": "schematic",
+        "maturity": "experimental"
       }
     ]
   },

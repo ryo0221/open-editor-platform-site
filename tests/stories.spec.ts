@@ -44,7 +44,7 @@ test.describe('story-01 初めて来て、何ができるかをつかむ', () =>
     pcOnly();
     await open(page);
     await expect(page.locator('[data-domains], [data-editors]')).toHaveCount(0);
-    await expect(page.locator('#editors [data-maturity]')).toHaveCount(16);
+    await expect(page.locator('#editors [data-maturity]')).toHaveCount(19);
     await expect(page.locator('#editors').getByRole('link', { name: /実装状況と制限/ })).toHaveAttribute('href', DOC('docs/status.md'));
   });
 
@@ -531,7 +531,8 @@ test.describe('story-12b 確認済みの事例', () => {
       await expect(img).toHaveAttribute('alt', /.+：.+/);
       const note = card.locator('[data-purpose-source]');
       await expect(note).toContainText('開発版');
-      await expect(note).toContainText('この見本は公開版には含まれていません。');
+      // Say whether the public Playground can open the same sample (open-editor-platform 7041f14).
+      await expect(note).toContainText(id === 'pcb' ? '公開版の Playground でも、回路基板（試験的な実装）から同じ基板を開けます。' : 'この見本は公開版の Playground からは開けません。');
       await expect(note).not.toContainText('確認');
       await expect(card).not.toContainText('421ec42');
     }
@@ -556,13 +557,15 @@ test.describe('story-13 事例から Editor を知る', () => {
     await open(page);
     await expect(page.locator('[data-editor-group] h3')).toHaveText(['基本 Editor', '専用 Editor']);
     await expect(page.locator('[data-editor-group="basic"] [data-editor] strong')).toHaveText(['Document', 'Slide', 'Whiteboard', 'Design', 'Structured Data', 'Structured Graph', 'Geo', 'React UI', 'Animation', 'Review / File Viewer']);
-    await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図']);
+    await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図', '施工工程', '回路基板', '回路図']);
     // Structured Graph left Preview on 2026-11-14 (schema 3, older schemas migrated on read).
     await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録');
     await expect(page.locator('#editors')).not.toContainText('Preview');
     // Specialized is not the same as experimental: Ryo accepted every specialized editor on 2026-11-14.
     for (const id of ['bim', 'cad', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に収録');
-    await expect(page.locator('#editors')).not.toContainText('試験的');
+    // The packages added to the public build on 2026-11-14 are experimental there, and say so.
+    for (const id of ['construction', 'pcb', 'schematic']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
+    await expect(page.locator('[data-purpose="pcb"] .purpose-editors a')).toHaveText(['回路基板', '回路図', 'CAD']);
     // The editor cut is laid out as cards, two columns on a PC (guards against a stray rule swallowing the styles).
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('display', 'grid');
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('list-style-type', 'none');
