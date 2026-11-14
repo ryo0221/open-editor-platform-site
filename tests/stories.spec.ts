@@ -14,15 +14,16 @@ async function open(page: Page, path = '/') {
 }
 
 test.describe('story-01 初めて来て、何ができるかをつかむ', () => {
-  test('test-01 [story-01.criterion-01] the first screen shows the value, license and stage, the two buttons, the docs link and the community line', async ({ page }) => {
+  test('test-01 [story-01.criterion-01] the first screen shows the value, license and stage, the example and workflow buttons, the source link, the docs link and the community line', async ({ page }) => {
     pcOnly();
     await open(page);
-    for (const text of ['AI と人のためのオープンソース編集基盤（AGPLv3・開発プレビュー）', 'AIと作り、Editorで仕上げる。', '文書、スライド、データ、地図、デザインを、開き直して直せる成果物に。', '操作例を見る']) {
+    for (const text of ['AI と人のためのオープンソース編集基盤（AGPLv3・開発プレビュー）', 'AIと作り、Editorで仕上げる。', '文書、スライド、データ、地図、デザインを、開き直して直せる成果物に。', '目的から事例を見る', '制作の流れを動画で見る']) {
       await expect(page.getByText(text, { exact: true }).first()).toBeInViewport();
     }
     for (const name of [/^ソースを見る（GitHub）/, /^組み込み・拡張の資料/]) await expect(page.locator('#top').getByRole('link', { name })).toBeInViewport();
     await expect(page.locator('#top')).toContainText('作品と道具を共有するコミュニティを構想・設計しています。');
-    await expect(page.locator('[data-cta]')).toHaveAttribute('href', '#features');
+    await expect(page.locator('[data-cta]')).toHaveAttribute('href', '#purposes');
+    await expect(page.locator('[data-flow]')).toHaveAttribute('href', '#features');
     await expect(page.locator('[data-source]')).toHaveAttribute('href', CORE);
     await expect(page.locator('[data-docs]')).toHaveAttribute('href', DOC('docs/developer-guide.md'));
     // The page no longer leads with a plugin download.
@@ -39,19 +40,14 @@ test.describe('story-01 初めて来て、何ができるかをつかむ', () =>
     await expect(cards.nth(2)).toContainText('開発プレビュー');
   });
 
-  test('test-03 [story-01.criterion-03] the editors are grouped as public, experimental and planned, with the status page linked', async ({ page }) => {
+  test('test-03 [story-01.criterion-03] the old three-way scope list is gone; maturity is shown per editor instead', async ({ page }) => {
     pcOnly();
     await open(page);
-    const box = page.locator('[data-domains]');
-    await expect(box.locator('[data-domain] .status')).toHaveText(['公開版で使える', '試験的に収録', '構想中']);
-    await expect(box.locator('[data-domain="available"]')).toContainText('地図（Geo）');
-    await expect(box.locator('[data-domain="available"]')).not.toContainText('CAD');
-    await expect(box.locator('[data-domain="experimental"]')).toContainText('CAD、3D キャラクター、小説・漫画の制作');
-    await expect(box.locator('[data-domain="concept"] a')).toHaveAttribute('href', '#community');
-    await expect(box.getByRole('link', { name: /実装状況と制限/ })).toHaveAttribute('href', DOC('docs/status.md'));
-    // The old plugin-only editor list is gone.
-    await expect(page.locator('[data-editors]')).toHaveCount(0);
+    await expect(page.locator('[data-domains], [data-editors]')).toHaveCount(0);
+    await expect(page.locator('#editors [data-maturity]')).toHaveCount(16);
+    await expect(page.locator('#editors').getByRole('link', { name: /実装状況と制限/ })).toHaveAttribute('href', DOC('docs/status.md'));
   });
+
 });
 
 test.describe('story-02 一つの業務の流れを動画で確かめる', () => {
@@ -69,6 +65,18 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     await expect(page.getByText('撮影：公開版 421ec42（いまの版とは画面が違うことがあります）')).toBeVisible();
     await expect(page.locator('#features')).toContainText('AI と人の制作フローを想定し、Playground 上の操作を自動実行して撮りました。');
     expect(await page.locator('body').innerText()).not.toMatch(/AI ホスト（Claude Code）との実演|Claude Code での実演/);
+    // Each clip says what it is on its own: captions mark the AI and person steps as automated, in both languages.
+    for (const name of ['uc-1-goal', 'uc-2-workflow', 'uc-3-ideas', 'uc-4-data', 'uc-5-geo', 'uc-6-proposal', 'uc-7-design-doc', 'uc-8-mock', 'story-summary']) {
+      for (const lang of ['ja', 'en']) {
+        const vtt = await (await page.request.get(`/videos/${name}.${lang}.vtt`)).text();
+        const cues = vtt.split(/\n/).filter(l => l && !/^(WEBVTT|\d+|\S+ --> \S+)$/.test(l));
+        expect(cues.filter(c => /^(AI |A person |AI が|人が)/.test(c)), `${name}.${lang}`).toEqual([]);
+        expect(cues.some(c => /自動操作|automated/i.test(c)), `${name}.${lang}`).toBe(true);
+      }
+    }
+    // The burned-in label was replaced (manifest records the edit; the frames themselves are checked by eye in 10).
+    const manifest = await (await page.request.get('/videos/manifest.json')).json();
+    expect(manifest.label).toBe('playground-demo');
   });
 
   test('test-05 [story-02.criterion-02] a use-case clip opens with captions, steps to the next one, and closes back to its card', async ({ page }) => {
@@ -93,10 +101,10 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     await expect(page.locator('[data-play-uc="proposal"]')).toBeFocused();
   });
 
-  test('test-06 [story-02.criterion-03] the main button "See it in action" moves to the features with the Short and eight cards', async ({ page }) => {
+  test('test-06 [story-02.criterion-03] "Watch a workflow" moves to the features with the Short and eight cards', async ({ page }) => {
     pcOnly();
     await open(page);
-    await page.getByRole('link', { name: '操作例を見る' }).click();
+    await page.getByRole('link', { name: '制作の流れを動画で見る' }).click();
     await expect(page).toHaveURL(/#features$/);
     await expect(page.locator('#features-h')).toBeInViewport();
     await expect(page.locator('[data-uc]')).toHaveCount(8);
@@ -148,6 +156,10 @@ test.describe('story-02 一つの業務の流れを動画で確かめる', () =>
     await expect(player.locator('[data-player-title]')).toHaveText('まとめ動画');
     const chapters = player.locator('[data-seek]');
     await expect(chapters).toHaveCount(9);
+    // The summary has chapters, not use-case steps: the previous/next buttons must not show.
+    await expect(player.locator('[data-uc-nav]')).toBeHidden();
+    await expect(player.getByRole('button', { name: '前のユースケース' })).toBeHidden();
+    await expect(player.getByRole('button', { name: '次のユースケース' })).toBeHidden();
     await expect(chapters.nth(5)).toHaveText('5. 地図で確かめる');
     const video = player.locator('video');
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.duration)).toBeLessThanOrEqual(600);
@@ -226,7 +238,7 @@ test.describe('story-04 AI ホストとの連携の今の状態を知る', () =>
     await open(page);
     await page.locator('[data-way="hosts"] button').click();
     const panel = page.locator('#panel-hosts');
-    await expect(panel.locator('[data-checked]')).toHaveText('v0.1.5 の公開時に確かめた環境：Windows 11 と WSL2（Ubuntu 22.04）、Claude Code 2.1.303 以降。同梱の本体は古い公開版で、いまの Open Editor Platform とは機能が違います。');
+    await expect(panel.locator('[data-checked]')).toHaveText('v0.1.5 の公開時の確認環境：Windows 11 と WSL2（Ubuntu 22.04）、Claude Code 2.1.303。後続の Claude Code の版は確かめていません。同梱の本体は古い公開版で、いまの Open Editor Platform とは機能が違います。');
     const link = panel.locator('[data-release]');
     await expect(link).toHaveAttribute('href', RELEASE);
     await expect(link).toHaveAttribute('target', '_blank');
@@ -315,7 +327,7 @@ test.describe('story-07 PaoBub を知る', () => {
     await open(page);
     await expect(page.locator('#paobub a')).toHaveCount(0);
     for (const href of await page.locator('a[href]').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href))) {
-      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub-mvp|editor-platform)(\/|$)/);
+      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
     }
   });
 
@@ -350,7 +362,7 @@ test.describe('story-08 不安な点を FAQ で確かめる', () => {
     await expect(page.locator('[data-faq="3"]')).toContainText('そのブラウザの IndexedDB に残ります');
     await expect(page.locator('[data-faq="4"]')).toContainText('何がどこへ送られるかは、組み込む側のアプリや連携の作り方で決まります');
     await expect(page.locator('[data-faq="5"]')).toContainText('その版の保存先、導入方法、権限、確かめた環境は、版ごとの資料に載っています。');
-    await expect(page.locator('[data-faq="6"]')).toContainText('別契約（商用ライセンス）は、まだ提供していません');
+    await expect(page.locator('[data-faq="6"]')).toContainText('AGPL の条件によらない利用のための別契約（商用ライセンス）は、まだ提供していません');
     await expect(page.locator('.faq-note')).toHaveCount(0);
   });
 
@@ -410,7 +422,7 @@ test.describe('story-10 英語で読む', () => {
     await page.locator('[data-lang-switch]').click();
     await expect(page).toHaveURL(/\/en\/#faq$/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page.locator('[data-cta]')).toHaveText('See it in action');
+    await expect(page.locator('[data-cta]')).toHaveText('See examples by goal');
     expect(await shape()).toEqual(ja);
   });
 
@@ -419,7 +431,8 @@ test.describe('story-10 英語で読む', () => {
     await open(page, '/en/');
     await expect(page.locator('[data-way="hosts"] .status')).toHaveText('Development frozen');
     await expect(page.locator('[data-community-stage]')).toHaveText('In design');
-    await expect(page.locator('[data-domain] .status')).toHaveText(['In the public build', 'Included as an experiment', 'Planned']);
+    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('In the public build, Preview');
+    await expect(page.locator('[data-purpose="watch"] .purpose-case')).toHaveText('The mechanical watch “SK-01”');
     const text = await page.evaluate(() => {
       const clone = document.body.cloneNode(true) as HTMLElement;
       clone.querySelectorAll('[lang="ja"], script').forEach(el => el.remove());
@@ -472,5 +485,58 @@ test.describe('story-11 スマートフォンで読む', () => {
       await open(page, path);
       expect(await page.locator('body').innerText()).not.toMatch(/モバイル対応|スマートフォン対応|mobile[- ]?(ready|friendly|support)/i);
     }
+  });
+});
+
+test.describe('story-12 目的から事例を探す', () => {
+  test('test-44 [story-12.criterion-01] the purpose cut comes first and shows the five agreed examples with their focus', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    const order = await page.evaluate(() => [...document.querySelectorAll('main section[id]')].map(s => s.id));
+    expect(order.indexOf('purposes')).toBeLessThan(order.indexOf('editors'));
+    expect(order.indexOf('editors')).toBeLessThan(order.indexOf('features'));
+    const cards = page.locator('[data-purpose]');
+    await expect(cards.locator('h3')).toHaveText(['建築をつくる', 'クルマをデザインする', '時計をつくる', '漫画をつくる', '小説を書く']);
+    await expect(cards.locator('.purpose-case')).toHaveText(['スカイツリーを題材にした BIM モデル', 'オープンカー「凪」', '機械式時計「SK-01」', '漫画制作プロジェクト', '『関ケ原 — 静かな決断』']);
+    await expect(page.locator('[data-purpose="watch"]')).toContainText('部品、組立・分解、歯車と機構の動き');
+  });
+
+  test('test-45 [story-12.criterion-02] an example whose material is not checked shows that, with no image and no café-video note', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    for (const card of await page.locator('[data-purpose][data-state="checking"]').all()) {
+      await expect(card.locator('img')).toHaveCount(0);
+      await expect(card.locator('[data-purpose-source]')).toHaveText('この事例の画像と、どこまで公開版で確かめられるかを確認してから載せます。');
+      // The café recording note belongs to the café clips only.
+      await expect(card).not.toContainText('421ec42');
+      await expect(card).not.toContainText('Playground 上の操作を自動実行');
+    }
+  });
+});
+
+test.describe('story-13 事例から Editor を知る', () => {
+  test('test-46 [story-13.criterion-01] each example links to the editors it uses, and the link lands on that editor', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await expect(page.locator('[data-purpose="building"] .purpose-editors a')).toHaveText(['BIM', 'CAD']);
+    await expect(page.locator('[data-purpose="novel"] .purpose-editors a')).toHaveText(['小説', 'Document']);
+    await page.locator('[data-purpose="watch"] .purpose-editors a', { hasText: 'CAD' }).click();
+    await expect(page).toHaveURL(/#editor-cad$/);
+    await expect(page.locator('#editor-cad')).toBeInViewport();
+  });
+
+  test('test-47 [story-13.criterion-02] editors are split into basic and specialized, each with its own maturity', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await expect(page.locator('[data-editor-group] h3')).toHaveText(['基本 Editor', '専用 Editor']);
+    await expect(page.locator('[data-editor-group="basic"] [data-editor] strong')).toHaveText(['Document', 'Slide', 'Whiteboard', 'Design', 'Structured Data', 'Structured Graph', 'Geo', 'React UI', 'Animation', 'Review / File Viewer']);
+    await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図']);
+    // Basic is not the same as stable: Structured Graph is a basic editor and still a Preview.
+    await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録・Preview');
+    for (const id of ['bim', 'cad', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
+    // The editor cut is laid out as cards, two columns on a PC (guards against a stray rule swallowing the styles).
+    await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('display', 'grid');
+    await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('list-style-type', 'none');
+    await expect(page.locator('#community .steps')).toHaveCSS('list-style-type', 'none');
   });
 });

@@ -29,7 +29,11 @@ const faq = [
   { n: 6, link: site.links.licenseGuide },
   { n: 7 },
 ];
-const navLinks = [['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
+const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
+// Purpose cut (top) and editor cut (below): each example names the editors it uses, and each editor
+// carries its own maturity, so "basic / specialized" never stands in for "public / experimental".
+const editorGroups = (['basic', 'specialized'] as const).map(group => ({ group, items: site.editors[group] }));
+const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.title`), case: w(`purposes.${p.id}.case`) }));
 ---
 <Base lang={lang}>
   <a class="skip" href="#main">{w('skip')}</a>
@@ -59,7 +63,8 @@ const navLinks = [['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#commu
           <h1>{w('hero.title')}</h1>
           <p class="sub">{w('hero.sub')}</p>
           <div class="cta">
-            <a class="btn btn-primary" href="#features" data-cta>{w('hero.secondary')}</a>
+            <a class="btn btn-primary" href="#purposes" data-cta>{w('hero.secondary')}</a>
+            <a class="btn" href="#features" data-flow>{w('hero.flow')}</a>
             <a class="btn" href={site.links.core} {...ext} data-source>{w('hero.source')}<span class="visually-hidden">{newTab}</span></a>
           </div>
           <p class="others"><a href={site.links.developerGuide} {...ext} data-docs>{w('hero.docs')}<span class="visually-hidden">{newTab}</span></a></p>
@@ -76,6 +81,55 @@ const navLinks = [['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#commu
             <div class="card"><h3>{w(`values.${i}.title`)}</h3><p>{w(`values.${i}.body`)}</p></div>
           ))}
         </div>
+      </div>
+    </section>
+
+    <section class="section" id="purposes" aria-labelledby="purposes-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="purposes-h">{w('purposes.heading')}</h2>
+          <p>{w('purposes.lead')}</p>
+        </div>
+        <div class="grid3 purposes">
+          {purposes.map(p => (
+            <article class="card purpose" data-purpose={p.id} data-state={p.sourceChecked && p.image ? 'ready' : 'checking'}>
+              {p.sourceChecked && p.image
+                ? <img src={asset(p.image)} width="800" height="500" alt={w('purposes.imageAlt', { name: p.title, case: p.case })} />
+                : <div class="uc-pending">{w('purposes.checking')}</div>}
+              <div class="uc-body">
+                <h3>{p.title}</h3>
+                <p class="purpose-case">{p.case}</p>
+                <p>{w(`purposes.${p.id}.focus`)}</p>
+                <p class="purpose-editors"><span>{w('purposes.editors')}：</span>{p.editors.map((id, i) => <>{i > 0 && (lang === 'ja' ? '、' : ', ')}<a href={`#editor-${id}`}>{w(`editor.${id}`)}</a></>)}</p>
+                <p class="note" data-purpose-source>{p.sourceChecked ? w(`purposes.${p.id}.source`) : w('purposes.checkingBody')}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="editors" aria-labelledby="editors-h">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="editors-h">{w('editors.heading')}</h2>
+          <p>{w('editors.lead')} <a href={site.links.status} {...ext}>{w('editors.statusLink')}<span class="visually-hidden">{newTab}</span></a></p>
+        </div>
+        {editorGroups.map(({ group, items }) => (
+          <div class="editor-group" data-editor-group={group}>
+            <h3>{w(`editors.${group}`)}</h3>
+            <p>{w(`editors.${group}Lead`)}</p>
+            <ul class="editor-list">
+              {items.map(e => (
+                <li id={`editor-${e.id}`} data-editor={e.id} tabindex="-1">
+                  <strong>{w(`editor.${e.id}`)}</strong>
+                  <span class="editor-body">{w(`editor.${e.id}.body`)}</span>
+                  <span class={`status status-${e.maturity === 'experimental' ? 'preparing' : 'available'}`} data-maturity={e.maturity}>{w(`maturity.${e.maturity}`)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -125,16 +179,6 @@ const navLinks = [['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#commu
         {showOverview && (
           <div class="summary-row"><button class="btn" type="button" data-play-summary>{w('features.summary')}</button></div>
         )}
-
-        <div class="domains" data-domains>
-          <h3>{w('domains.heading')}</h3>
-          <p>{w('domains.lead')} <a href={site.links.status} {...ext}>{w('domains.statusLink')}<span class="visually-hidden">{newTab}</span></a></p>
-          <dl>
-            <div data-domain="available"><dt><span class="status status-available">{w('domains.available')}</span></dt><dd>{w('domains.availableList')}</dd></div>
-            <div data-domain="experimental"><dt><span class="status status-preparing">{w('domains.experimental')}</span></dt><dd>{w('domains.experimentalList')}</dd></div>
-            <div data-domain="concept"><dt><span class="status status-soon">{w('domains.concept')}</span></dt><dd><a href="#community">{w('domains.conceptList')}</a></dd></div>
-          </dl>
-        </div>
       </div>
     </section>
 

@@ -23,6 +23,122 @@
     "url": "https://example.com/paobub",
     "clip": ""
   },
+  "purposes": [
+    {
+      "id": "building",
+      "editors": [
+        "bim",
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "car",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "watch",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "comic",
+      "editors": [
+        "comic",
+        "design",
+        "character"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "novel",
+      "editors": [
+        "novel",
+        "document"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    }
+  ],
+  "editors": {
+    "basic": [
+      {
+        "id": "document",
+        "maturity": "included"
+      },
+      {
+        "id": "slide",
+        "maturity": "included"
+      },
+      {
+        "id": "whiteboard",
+        "maturity": "included"
+      },
+      {
+        "id": "design",
+        "maturity": "included"
+      },
+      {
+        "id": "data",
+        "maturity": "included"
+      },
+      {
+        "id": "graph",
+        "maturity": "preview"
+      },
+      {
+        "id": "geo",
+        "maturity": "included"
+      },
+      {
+        "id": "reactUi",
+        "maturity": "included"
+      },
+      {
+        "id": "animation",
+        "maturity": "included"
+      },
+      {
+        "id": "review",
+        "maturity": "included"
+      }
+    ],
+    "specialized": [
+      {
+        "id": "bim",
+        "maturity": "experimental"
+      },
+      {
+        "id": "cad",
+        "maturity": "experimental"
+      },
+      {
+        "id": "character",
+        "maturity": "experimental"
+      },
+      {
+        "id": "comic",
+        "maturity": "experimental"
+      },
+      {
+        "id": "novel",
+        "maturity": "experimental"
+      },
+      {
+        "id": "fictionMap",
+        "maturity": "experimental"
+      }
+    ]
+  },
   "videos": {
     "source": "playground",
     "commit": "421ec42",

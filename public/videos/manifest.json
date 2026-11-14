@@ -101,5 +101,7 @@
    "speed": 1,
    "duration": 22.3
   }
- ]
+ ],
+ "label": "playground-demo",
+ "labelNote": "Burned-in header replaced on 2026-11-14 with \"Playground の自動操作デモ（AI と人の制作フローを想定・架空データ）\" / \"Automated Playground demo · assumes an AI + human workflow · fictional data\"; captions mark AI and person steps as automated. No re-recording."
 }

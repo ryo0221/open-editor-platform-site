@@ -61,7 +61,7 @@ const isPrivateRepo = value => {
     const u = new URL(value);
     if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
     const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => decodeURIComponent(s).toLowerCase());
-    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform'].includes(repo.replace(/\.git$/, ''));
+    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform', 'open-editor-community'].includes(repo.replace(/\.git$/, ''));
   } catch { return true; } // unreadable: treat as private
 };
 // Every site link is required; only the PaoBub URL may stay empty before its release.
@@ -122,6 +122,35 @@ if (existsSync('public/videos/manifest.json')) {
     if (typeof manifest.clips?.find(c => c.name === name)?.duration !== 'number') fail(`use case ${uc.id}: ${name} has no length in public/videos/manifest.json`);
   }
 } else fail('public/videos/manifest.json is missing');
+
+// Purpose cut and editor cut (02 include-11/12, 05 state-purpose-*, 07 control-04/12, 2026-11 改訂).
+// Each example lists editors that exist in the editor cut, and shows material only once its source and scope are checked.
+const editorIds = new Map();
+for (const group of ['basic', 'specialized']) {
+  for (const e of site.editors?.[group] ?? []) {
+    if (editorIds.has(e.id)) fail(`editor "${e.id}" is listed twice`);
+    editorIds.set(e.id, group);
+    oneOf(e.maturity, ['included', 'preview', 'experimental'], `editors.${group}.${e.id}.maturity`);
+    for (const key of [`editor.${e.id}`, `editor.${e.id}.body`]) if (!(key in ja)) fail(`editor ${e.id} has no word ${key}`);
+  }
+}
+if (!site.editors?.basic?.length || !site.editors?.specialized?.length) fail('editors.basic and editors.specialized must both list editors');
+const purposeIds = (site.purposes ?? []).map(p => p.id);
+if (purposeIds.length !== 5) fail(`purposes must list the five agreed examples, found ${purposeIds.length}`);
+for (const p of site.purposes ?? []) {
+  if (purposeIds.indexOf(p.id) !== purposeIds.lastIndexOf(p.id)) fail(`purpose "${p.id}" is listed twice`);
+  for (const key of ['title', 'case', 'focus', 'source']) if (!(`purposes.${p.id}.${key}` in ja)) fail(`purpose ${p.id} has no word purposes.${p.id}.${key}`);
+  if (!p.editors?.length) fail(`purpose ${p.id} lists no editors`);
+  for (const id of p.editors ?? []) if (!editorIds.has(id)) fail(`purpose ${p.id} uses editor "${id}", which is not in the editor cut`);
+  if (typeof p.sourceChecked !== 'boolean') fail(`purpose ${p.id}: sourceChecked must be true or false`);
+  // Material shows only after its origin and how far it can be shown are recorded (06) and approved.
+  if (p.image && !p.sourceChecked) fail(`purpose ${p.id} has an image but sourceChecked is false`);
+  if (p.sourceChecked) {
+    if (!p.image) fail(`purpose ${p.id}: sourceChecked is true but there is no image`);
+    else file(p.image, `purpose ${p.id} image`, IMAGE);
+    for (const [lang, words] of [['ja', ja], ['en', en]]) if (words[`purposes.${p.id}.source`] === words['purposes.building.source'] && /確認中|Checking/.test(words[`purposes.${p.id}.source`])) fail(`purpose ${p.id}: the source note (${lang}) still says it is being checked`);
+  }
+}
 
 if (problems.length) {
   console.error(`Content check failed (${problems.length}):\n- ` + problems.join('\n- '));

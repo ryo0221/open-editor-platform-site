@@ -107,7 +107,10 @@ function setupPlayer(data: Data) {
   }
   for (const btn of [prev, next]) {
     btn.addEventListener('click', () => {
-      showUseCase(index + Number(btn.dataset.step));
+      // Only a use-case clip has neighbours; the summary (index -1) has none.
+      const to = index + Number(btn.dataset.step);
+      if (index < 0 || to < 0 || to >= data.useCases.length) return;
+      showUseCase(to);
       // Keep the player's return target on the card of the clip now showing.
       opener = $<HTMLElement>(`[data-play-uc="${data.useCases[index].id}"]`) ?? opener;
     });
