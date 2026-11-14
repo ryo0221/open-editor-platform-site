@@ -145,7 +145,7 @@
     "specialized": [
       {
         "id": "bim",
-        "maturity": "experimental"
+        "maturity": "included"
       },
       {
         "id": "cad",
@@ -157,15 +157,15 @@
       },
       {
         "id": "comic",
-        "maturity": "experimental"
+        "maturity": "included"
       },
       {
         "id": "novel",
-        "maturity": "experimental"
+        "maturity": "included"
       },
       {
         "id": "fictionMap",
-        "maturity": "experimental"
+        "maturity": "included"
       }
     ]
   },
