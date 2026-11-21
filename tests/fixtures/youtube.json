@@ -1,0 +1,17 @@
+{
+  "playlistId": "PLfixture0000",
+  "videos": [
+    {
+      "id": "AAAAAAAAAAA",
+      "title": "テスト動画 1：Editor Platform で作る",
+      "published": "2026-11-01T00:00:00+00:00",
+      "thumb": "posters/uc-1-goal.jpg"
+    },
+    {
+      "id": "BBBBBBBBBBB",
+      "title": "テスト動画 2：作品のメイキング",
+      "published": "2026-11-02T00:00:00+00:00",
+      "thumb": "posters/uc-2-workflow.jpg"
+    }
+  ]
+}

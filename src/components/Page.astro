@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { t, site, asset, pageUrl, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, clipLength, type Lang } from '../lib/site';
+import { t, site, asset, pageUrl, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, clipLength, youtubeVideos, type Lang } from '../lib/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -291,6 +291,25 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           <p>{w('youtube.body')}</p>
           <p><a class="btn" href={site.links.youtube} {...ext} data-youtube>{w('youtube.link')}<span class="visually-hidden">{newTab}</span></a></p>
         </div>
+        {youtubeVideos.length > 0 && (
+          <>
+            <div class="grid3 yt-list" data-yt-list>
+              {youtubeVideos.map(v => (
+                <article class="card yt" data-yt={v.id}>
+                  <button class="yt-thumb" type="button" data-yt-play={v.id} data-yt-title={v.title}>
+                    <img src={asset(v.thumb)} width="480" height="360" alt="" loading="lazy" />
+                    <span class="yt-play">{w('youtube.play')}<span class="visually-hidden">：<span lang="ja">{v.title}</span></span></span>
+                  </button>
+                  <div class="uc-body">
+                    <h3 lang="ja">{v.title}</h3>
+                    <p><a href={`https://www.youtube.com/watch?v=${v.id}`} {...ext}>{w('youtube.watchOn')}<span class="visually-hidden">{newTab}</span></a></p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <p class="note" data-yt-note>{w('youtube.privacy')}</p>
+          </>
+        )}
       </div>
     </section>
 
@@ -366,6 +385,16 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <p><a href="#paobub" data-close-to="#paobub">{w('panel.embedding.paobub')}</a></p>
     </div>
   </dialog>
+
+  {youtubeVideos.length > 0 && (
+    <dialog id="yt-player" class="player" aria-labelledby="yt-player-h">
+      <div class="dialog-head"><h2 id="yt-player-h" lang="ja" data-yt-player-title></h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+      <div class="dialog-body">
+        <div class="yt-frame" data-yt-frame></div>
+        <p><a href="" {...ext} data-yt-fallback>{w('youtube.fallback')}<span class="visually-hidden">{newTab}</span></a></p>
+      </div>
+    </dialog>
+  )}
 
   {showOverview || playable.length > 0 ? (
     <dialog id="player" class="player" aria-labelledby="player-h">

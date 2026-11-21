@@ -155,6 +155,19 @@ for (const p of site.purposes ?? []) {
   }
 }
 
+// YouTube playlist snapshot (scripts/fetch-youtube.mjs): plain video ids and titles, thumbnails as local files.
+const yt = site.youtube ?? {};
+if (!yt.snapshot || !existsSync(yt.snapshot)) fail(`youtube.snapshot ${yt.snapshot} is missing`);
+else {
+  const snap = read(yt.snapshot);
+  if (snap.playlistId !== yt.playlistId) fail(`the YouTube snapshot is for playlist "${snap.playlistId}" but the settings name "${yt.playlistId}"; run scripts/fetch-youtube.mjs`);
+  for (const v of snap.videos ?? []) {
+    if (!/^[A-Za-z0-9_-]{11}$/.test(v.id ?? '')) fail(`YouTube video id "${v.id}" is not a video id`);
+    if (!String(v.title ?? '').trim()) fail(`YouTube video ${v.id} has no title`);
+    file(v.thumb, `YouTube video ${v.id} thumbnail`, IMAGE);
+  }
+}
+
 if (problems.length) {
   console.error(`Content check failed (${problems.length}):\n- ` + problems.join('\n- '));
   process.exit(1);

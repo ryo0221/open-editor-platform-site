@@ -619,3 +619,35 @@ test.describe('story-16 YouTube チャンネルを知る', () => {
     await expect(page.locator('iframe')).toHaveCount(0);
   });
 });
+
+test.describe('story-16b YouTube の再生リストを見る', () => {
+  test('test-52 [story-16.criterion-02] playlist videos show local thumbnails and load the youtube-nocookie player only after Play', async ({ page }) => {
+    const external: string[] = [];
+    page.on('request', r => { if (!r.url().startsWith(VARIANT)) external.push(r.url()); });
+    await page.route(/youtube-nocookie\.com/, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>player</p>' }));
+    await page.goto(VARIANT + '/', { waitUntil: 'load' });
+    await page.locator('#youtube').scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-yt]')).toHaveCount(2);
+    await expect(page.locator('[data-yt] h3')).toHaveText(['テスト動画 1：Editor Platform で作る', 'テスト動画 2：作品のメイキング']);
+    for (const img of await page.locator('[data-yt] img').all()) expect(await img.getAttribute('src')).toMatch(/^\/posters\//);
+    await expect(page.locator('[data-yt-note]')).toContainText('押すまで YouTube には接続しません');
+    await expect(page.locator('iframe')).toHaveCount(0);
+    expect(external).toEqual([]);
+    await page.locator('[data-yt-play="BBBBBBBBBBB"]').click();
+    const dialog = page.locator('#yt-player');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/BBBBBBBBBBB?autoplay=1&rel=0');
+    await expect(dialog.locator('[data-yt-fallback]')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=BBBBBBBBBBB');
+    await dialog.getByRole('button', { name: '閉じる' }).click();
+    await expect(dialog.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('[data-yt-play="BBBBBBBBBBB"]')).toBeFocused();
+  });
+
+  test('test-53 [story-16.criterion-02] with no playlist set, the section shows only the channel link', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await expect(page.locator('[data-yt]')).toHaveCount(0);
+    await expect(page.locator('#yt-player')).toHaveCount(0);
+    await expect(page.locator('[data-youtube]')).toBeVisible();
+  });
+});

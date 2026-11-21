@@ -62,3 +62,8 @@ export function chapters(lang: Lang): { start: number; title: string }[] {
     return m ? [{ start: toSec(m[1]), title: m[2].trim() }] : [];
   });
 }
+
+// Videos of the YouTube playlist, from the snapshot that .github/workflows/youtube.yml refreshes (scripts/fetch-youtube.mjs).
+// Thumbnails are files in public/, so the page loads nothing from YouTube until a reader presses Play.
+export type YoutubeVideo = { id: string; title: string; published: string; thumb: string };
+export const youtubeVideos: YoutubeVideo[] = JSON.parse(readFileSync(join(process.cwd(), site.youtube.snapshot), 'utf8')).videos;

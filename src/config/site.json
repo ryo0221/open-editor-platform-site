@@ -312,5 +312,9 @@
     "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md",
     "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md",
     "youtube": "https://www.youtube.com/@tokiwa_works"
+  },
+  "youtube": {
+    "playlistId": "",
+    "snapshot": "src/data/youtube.json"
   }
 }

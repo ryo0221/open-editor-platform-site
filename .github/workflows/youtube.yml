@@ -1,0 +1,34 @@
+# Keeps the LP's YouTube list in step with the playlist named in src/config/site.json (youtube.playlistId).
+# Runs daily and on demand; commits the snapshot and thumbnails only when they changed, which starts a Cloudflare build.
+name: Refresh YouTube playlist
+on:
+  schedule:
+    - cron: '17 18 * * *' # 03:17 JST
+  workflow_dispatch:
+  push:
+    paths:
+      - src/config/site.json
+      - scripts/fetch-youtube.mjs
+      - .github/workflows/youtube.yml
+permissions:
+  contents: write
+concurrency:
+  group: youtube-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/fetch-youtube.mjs
+      - name: Commit when the playlist changed
+        run: |
+          git add src/data/youtube.json public/youtube
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh the YouTube playlist snapshot"
+          git push
