@@ -26,7 +26,10 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€£₩₹]\s*\d/, /\b(USD|EUR|JPY|GBP)\s*\d/i, /\d\s*(dollars?|euros?|pounds?|yen|USD|EUR|JPY|GBP)\b/i, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
 for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) {
-    for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
+    // The beta commercial-license policy (open-editor-platform BETA-COMMERCIAL-POLICY.md, Ryo 2026-11-21) is the one
+    // decided offer the page may call free; prices, dates and other free claims stay out everywhere.
+    const betaWords = key.startsWith('beta.') || key === 'nav.beta' || key === 'faq.a6';
+    for (const re of forbidden) if (re.test(text) && !(betaWords && (String(re) === '/無料/' || String(re) === '/\\bfree\\b/i'))) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
   }
 }
 

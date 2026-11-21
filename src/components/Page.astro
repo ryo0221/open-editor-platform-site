@@ -29,7 +29,7 @@ const faq = [
   { n: 6, link: site.links.licenseGuide },
   { n: 7 },
 ];
-const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#contribute', 'nav.contribute'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
+const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#beta', 'nav.beta'], ['#community', 'nav.community'], ['#contribute', 'nav.contribute'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
 // Purpose cut (top) and editor cut (below): each example names the editors it uses, and each editor
 // carries its own maturity, so "basic / specialized" never stands in for "public / experimental".
 const editorGroups = (['basic', 'specialized'] as const).map(group => ({ group, items: site.editors[group] }));
@@ -211,6 +211,26 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       </div>
     </section>
 
+    <section class="section beta" id="beta" aria-labelledby="beta-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p><span class="status status-planned" data-beta-stage>{w('beta.badge')}</span></p>
+          <h2 id="beta-h">{w('beta.heading')}</h2>
+          <p>{w('beta.lead')}</p>
+        </div>
+        <div class="grid3">
+          {['agpl', 'beta', 'ga'].map(id => (
+            <div class="card" data-beta={id}><h3>{w(`beta.${id}`)}</h3><p>{w(`beta.${id}.body`)}</p></div>
+          ))}
+        </div>
+        <p class="band band-soon" data-beta-note>{w('beta.note')}</p>
+        <ul class="links">
+          <li><a href={site.links.betaPolicy} {...ext} data-beta-policy>{w('beta.policyLink')}<span class="visually-hidden">{newTab}</span></a></li>
+          <li><a href={site.links.commercialLicense} {...ext}>{w('beta.commercialLink')}<span class="visually-hidden">{newTab}</span></a></li>
+        </ul>
+      </div>
+    </section>
+
     <section class="section community" id="community" aria-labelledby="community-h">
       <div class="wrap">
         <div class="section-head">
@@ -263,6 +283,17 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       </div>
     </section>
 
+    <section class="section youtube" id="youtube" aria-labelledby="youtube-h">
+      <div class="wrap">
+        <div class="body">
+          <p class="eyebrow">{w('youtube.eyebrow')}</p>
+          <h2 id="youtube-h">{w('youtube.heading')}</h2>
+          <p>{w('youtube.body')}</p>
+          <p><a class="btn" href={site.links.youtube} {...ext} data-youtube>{w('youtube.link')}<span class="visually-hidden">{newTab}</span></a></p>
+        </div>
+      </div>
+    </section>
+
     <section class="section faq" id="faq" aria-labelledby="faq-h">
       <div class="wrap">
         <div class="section-head"><h2 id="faq-h">{w('faq.heading')}</h2></div>
@@ -293,6 +324,7 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <p>{w('footer.issuesNote')}</p>
       <ul>
         <li><a href={site.links.plugins} {...ext}>{w('footer.plugins')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.youtube} {...ext}>{w('footer.youtube')}<span class="visually-hidden">{newTab}</span></a></li>
       </ul>
       <p class="credits">{w('footer.credits')}</p>
     </div>

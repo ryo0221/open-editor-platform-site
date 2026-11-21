@@ -590,3 +590,32 @@ test.describe('story-14 一緒に作る', () => {
     await expect(page.locator('[data-contribute="code"]')).toContainText('権利の確認');
   });
 });
+
+test.describe('story-15 β版の無料提供を知る', () => {
+  test('test-50 [story-15.criterion-01] the beta section says the commercial license is planned to be free during the beta, paid from GA with advance notice, and not open yet', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await page.locator('.nav-wide').getByRole('link', { name: 'β版の無料提供' }).click();
+    await expect(page.locator('#beta-h')).toBeInViewport();
+    await expect(page.locator('[data-beta] h3')).toHaveText(['いま：AGPLv3 なら無料', 'β版の期間：商用ライセンスも無料', '正式版（GA）から：有料']);
+    await expect(page.locator('[data-beta="beta"]')).toContainText('終わりの日はあらかじめ決めておらず');
+    await expect(page.locator('[data-beta="ga"]')).toContainText('3 か月以上かつ 90 日以上前に公表します');
+    // The policy is not a license grant and the program is not open (BETA-COMMERCIAL-POLICY.md).
+    await expect(page.locator('[data-beta-note]')).toContainText('受け付けはまだ始めておらず');
+    await expect(page.locator('[data-beta-policy]')).toHaveAttribute('href', DOC('BETA-COMMERCIAL-POLICY.md'));
+    await expect(page.locator('#beta a[href$="COMMERCIAL-LICENSING.md"]')).toHaveCount(1);
+    // No price or date beyond the documented zero fee and notice period.
+    expect(await page.locator('#beta').innerText()).not.toMatch(/円|¥|\d{4}\s*年/);
+  });
+});
+
+test.describe('story-16 YouTube チャンネルを知る', () => {
+  test('test-51 [story-16.criterion-01] the YouTube section introduces the TOKIWA channel and links to it in a new tab, without embedding a player', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('#youtube-h')).toHaveText('TOKIWA の YouTube チャンネル');
+    await expect(page.locator('[data-youtube]')).toHaveAttribute('href', 'https://www.youtube.com/@tokiwa_works');
+    await expect(page.locator('[data-youtube]')).toHaveAttribute('target', '_blank');
+    await expect(page.locator('footer a[href="https://www.youtube.com/@tokiwa_works"]')).toHaveCount(1);
+    await expect(page.locator('iframe')).toHaveCount(0);
+  });
+});
