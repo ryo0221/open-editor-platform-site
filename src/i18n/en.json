@@ -265,5 +265,6 @@
   "youtube.play": "Play",
   "youtube.watchOn": "Watch on YouTube",
   "youtube.privacy": "These videos come automatically from a playlist on the TOKIWA channel. Pressing Play connects to YouTube (youtube-nocookie.com), and YouTube's privacy policy applies. Nothing connects to YouTube until you press Play.",
-  "youtube.fallback": "Can't play it? Watch on YouTube"
+  "youtube.fallback": "Can't play it? Watch on YouTube",
+  "youtube.thumbAlt": "{title} (video thumbnail)"
 }

@@ -1,6 +1,7 @@
 // One test per acceptance criterion in 03 訪問者のストーリー (2026-11 改訂案), plus the 07 controls that a browser can check.
 // Each title starts with its test ID and the criteria it covers; scripts/test-trace.mjs builds the trace table from them.
 import { test, expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const VARIANT = 'http://localhost:4322'; // built from tests/fixtures/variant.json (a public PaoBub URL, the Geo clip withheld)
 const pcOnly = () => test.skip(test.info().project.name !== 'pc', 'checked at PC width');
@@ -643,11 +644,13 @@ test.describe('story-16b YouTube の再生リストを見る', () => {
     await expect(page.locator('[data-yt-play="BBBBBBBBBBB"]')).toBeFocused();
   });
 
-  test('test-53 [story-16.criterion-02] with no playlist set, the section shows only the channel link', async ({ page }) => {
+  test('test-53 [story-16.criterion-02] the page lists the playlist snapshot with thumbnails served from the site', async ({ page }) => {
     pcOnly();
+    const snapshot = JSON.parse(readFileSync('src/data/youtube.json', 'utf8'));
     await open(page);
-    await expect(page.locator('[data-yt]')).toHaveCount(0);
-    await expect(page.locator('#yt-player')).toHaveCount(0);
+    await expect(page.locator('[data-yt]')).toHaveCount(snapshot.videos.length);
+    for (const img of await page.locator('[data-yt] img').all()) expect(await img.getAttribute('src')).toMatch(/^\/youtube\/[A-Za-z0-9_-]{11}\.jpg$/);
+    await expect(page.locator('iframe')).toHaveCount(0);
     await expect(page.locator('[data-youtube]')).toBeVisible();
   });
 });

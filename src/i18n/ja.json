@@ -265,5 +265,6 @@
   "youtube.play": "再生する",
   "youtube.watchOn": "YouTube で見る",
   "youtube.privacy": "動画は「TOKIWA」チャンネルの再生リストから自動で表示しています。再生を押すと YouTube（youtube-nocookie.com）に接続し、YouTube のプライバシーポリシーが適用されます。押すまで YouTube には接続しません。",
-  "youtube.fallback": "再生できないときは YouTube で見る"
+  "youtube.fallback": "再生できないときは YouTube で見る",
+  "youtube.thumbAlt": "{title}（動画のサムネイル）"
 }

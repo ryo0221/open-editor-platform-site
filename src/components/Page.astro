@@ -297,8 +297,8 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
               {youtubeVideos.map(v => (
                 <article class="card yt" data-yt={v.id}>
                   <button class="yt-thumb" type="button" data-yt-play={v.id} data-yt-title={v.title}>
-                    <img src={asset(v.thumb)} width="480" height="360" alt="" loading="lazy" />
-                    <span class="yt-play">{w('youtube.play')}<span class="visually-hidden">：<span lang="ja">{v.title}</span></span></span>
+                    <img src={asset(v.thumb)} width="480" height="360" alt={w('youtube.thumbAlt', { title: v.title })} loading="lazy" />
+                    <span class="yt-play">{w('youtube.play')}</span>
                   </button>
                   <div class="uc-body">
                     <h3 lang="ja">{v.title}</h3>
