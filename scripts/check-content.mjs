@@ -160,7 +160,8 @@ const yt = site.youtube ?? {};
 if (!yt.snapshot || !existsSync(yt.snapshot)) fail(`youtube.snapshot ${yt.snapshot} is missing`);
 else {
   const snap = read(yt.snapshot);
-  if (snap.playlistId !== yt.playlistId) fail(`the YouTube snapshot is for playlist "${snap.playlistId}" but the settings name "${yt.playlistId}"; run scripts/fetch-youtube.mjs`);
+  // Right after the playlist changes in the settings, the build runs before the workflow refreshes the snapshot; it shows the old list until then.
+  if (snap.playlistId !== yt.playlistId) console.warn(`Note: the YouTube snapshot is for playlist "${snap.playlistId}" but the settings name "${yt.playlistId}"; the workflow will refresh it (or run scripts/fetch-youtube.mjs).`);
   for (const v of snap.videos ?? []) {
     if (!/^[A-Za-z0-9_-]{11}$/.test(v.id ?? '')) fail(`YouTube video id "${v.id}" is not a video id`);
     if (!String(v.title ?? '').trim()) fail(`YouTube video ${v.id} has no title`);
