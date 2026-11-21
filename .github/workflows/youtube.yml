@@ -19,14 +19,16 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
       - run: node scripts/fetch-youtube.mjs
       - name: Commit when the playlist changed
         run: |
-          git add src/data/youtube.json public/youtube
+          git add src/data/youtube.json
+          # public/youtube exists only once a playlist has videos; -A also stages removed thumbnails.
+          if [ -d public/youtube ]; then git add -A public/youtube; fi
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
