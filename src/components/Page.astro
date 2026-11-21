@@ -188,12 +188,18 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           <h2 id="ways-h">{w('ways.heading')}</h2>
           <p>{w('ways.lead')}</p>
         </div>
-        <div class="grid3">
+        <div class="grid4 ways">
           <div class="card" data-way="playground">
             <h3>{w('ways.playground')}</h3>
             <p><span class="status status-available">{w('badge.public')}</span></p>
             <p>{w('ways.playground.body')}</p>
             <a class="btn btn-small" href={site.links.run} {...ext}>{w('ways.playground.link')}<span class="visually-hidden">{newTab}</span></a>
+          </div>
+          <div class="card" data-way="template">
+            <h3>{w('ways.template')}</h3>
+            <p><span class="status status-available">{w('badge.public')}</span></p>
+            <p>{w('ways.template.body')}</p>
+            <a class="btn btn-small" href={site.links.template} {...ext} data-template>{w('ways.template.link')}<span class="visually-hidden">{newTab}</span></a>
           </div>
           <div class="card" data-way="embedding">
             <h3>{w('ways.embedding')}</h3>
@@ -343,6 +349,7 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <p>{w('footer.issuesNote')}</p>
       <ul>
         <li><a href={site.links.plugins} {...ext}>{w('footer.plugins')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.template} {...ext}>{w('footer.template')}<span class="visually-hidden">{newTab}</span></a></li>
         <li><a href={site.links.youtube} {...ext}>{w('footer.youtube')}<span class="visually-hidden">{newTab}</span></a></li>
       </ul>
       <p class="credits">{w('footer.credits')}</p>

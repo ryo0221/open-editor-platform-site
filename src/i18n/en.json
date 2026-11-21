@@ -266,5 +266,9 @@
   "youtube.watchOn": "Watch on YouTube",
   "youtube.privacy": "These videos come automatically from a playlist on the TOKIWA channel. Pressing Play connects to YouTube (youtube-nocookie.com), and YouTube's privacy policy applies. Nothing connects to YouTube until you press Play.",
   "youtube.fallback": "Can't play it? Watch on YouTube",
-  "youtube.thumbAlt": "{title} (video thumbnail)"
+  "youtube.thumbAlt": "{title} (video thumbnail)",
+  "ways.template": "Build your own editor",
+  "ways.template.body": "Create your repository from Open Editor Template and run it with npm ci and npm run dev. A card editor shows display, editing, undo/redo, saving, operation proposals and a distributable build. No checkout of the core is needed (AGPLv3).",
+  "ways.template.link": "See the template",
+  "footer.template": "GitHub (editor template)"
 }

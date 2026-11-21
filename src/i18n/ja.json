@@ -266,5 +266,9 @@
   "youtube.watchOn": "YouTube で見る",
   "youtube.privacy": "動画は「TOKIWA」チャンネルの再生リストから自動で表示しています。再生を押すと YouTube（youtube-nocookie.com）に接続し、YouTube のプライバシーポリシーが適用されます。押すまで YouTube には接続しません。",
   "youtube.fallback": "再生できないときは YouTube で見る",
-  "youtube.thumbAlt": "{title}（動画のサムネイル）"
+  "youtube.thumbAlt": "{title}（動画のサムネイル）",
+  "ways.template": "自分の Editor を作る",
+  "ways.template.body": "Open Editor Template から自分のリポジトリを作り、npm ci と npm run dev で動かせます。カードの Editor を例に、表示・編集・Undo/Redo・保存・操作提案・配布用のビルドまで揃っています。本体のチェックアウトは要りません（AGPLv3）。",
+  "ways.template.link": "テンプレートを見る",
+  "footer.template": "GitHub（Editor テンプレート）"
 }

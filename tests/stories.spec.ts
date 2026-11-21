@@ -463,12 +463,12 @@ test.describe('story-11 スマートフォンで読む', () => {
     }
   });
 
-  test('test-34 [story-11.criterion-02] the three cards stack vertically and each states its status in text', async ({ page }) => {
+  test('test-34 [story-11.criterion-02] the four cards stack vertically and each states its status in text', async ({ page }) => {
     phoneOnly();
     await open(page);
     const boxes = await page.locator('[data-way]').evaluateAll(els => els.map(e => e.getBoundingClientRect()));
     for (let i = 1; i < boxes.length; i++) expect(boxes[i].top).toBeGreaterThan(boxes[i - 1].bottom - 1);
-    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済みの範囲を案内', '今後の対応を予定']);
+    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済み', '公開済みの範囲を案内', '今後の対応を予定']);
   });
 
   test('test-35 [story-11.criterion-01] picking a section in the phone menu closes the menu', async ({ page }) => {
@@ -652,5 +652,19 @@ test.describe('story-16b YouTube の再生リストを見る', () => {
     for (const img of await page.locator('[data-yt] img').all()) expect(await img.getAttribute('src')).toMatch(/^\/youtube\/[A-Za-z0-9_-]{11}\.jpg$/);
     await expect(page.locator('iframe')).toHaveCount(0);
     await expect(page.locator('[data-youtube]')).toBeVisible();
+  });
+});
+
+test.describe('story-17 自分の Editor を作る', () => {
+  test('test-54 [story-17.criterion-01] the ways section introduces the public editor template and links to it, also from the footer', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    const card = page.locator('[data-way="template"]');
+    await expect(card.locator('h3')).toHaveText('自分の Editor を作る');
+    await expect(card.locator('.status')).toHaveText('公開済み');
+    await expect(card).toContainText('npm ci と npm run dev');
+    await expect(card).toContainText('AGPLv3');
+    await expect(page.locator('[data-template]')).toHaveAttribute('href', 'https://github.com/ryo0221/open-editor-template');
+    await expect(page.locator('footer a[href="https://github.com/ryo0221/open-editor-template"]')).toHaveCount(1);
   });
 });

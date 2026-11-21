@@ -311,7 +311,8 @@
     "issuesPlugins": "https://github.com/ryo0221/editor-platform-plugins/issues",
     "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md",
     "youtube": "https://www.youtube.com/@tokiwa_works",
-    "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md"
+    "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md",
+    "template": "https://github.com/ryo0221/open-editor-template"
   },
   "youtube": {
     "playlistId": "PLfixture0000",
