@@ -286,6 +286,23 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           <p>{w('paobub.body')}</p>
           {paobubUrl && <p><a class="btn" href={paobubUrl} {...ext} data-paobub-link>{w('paobub.visit')}<span class="visually-hidden">{newTab}</span></a></p>}
         </div>
+        <div class="grid3 paobub-points">
+          {[1, 2, 3].map(i => (
+            <div class="card" data-paobub-point={i}><h3>{w(`paobub.point${i}`)}</h3><p>{w(`paobub.point${i}.body`)}</p></div>
+          ))}
+        </div>
+        <div class="paobub-works" data-paobub-works>
+          <h3>{w('paobub.worksHeading')}</h3>
+          <p>{w('paobub.worksLead')}</p>
+          <ul class="links">
+            {['manga', 'watch', 'car', 'skytree', 'factory', 'shiraha'].map(id => <li data-paobub-work={id}>{w(`paobub.work.${id}`)}</li>)}
+          </ul>
+          <p class="paobub-actions">
+            <a class="btn btn-small" href={site.links.paobubWorks} {...ext} data-paobub-works-link>{w('paobub.worksLink')}<span class="visually-hidden">{newTab}</span></a>
+            <a class="btn btn-small" href="#youtube">{w('paobub.videosLink')}</a>
+          </p>
+        </div>
+        {!paobubUrl && <p class="band band-soon" data-paobub-note>{w('paobub.note')}</p>}
       </div>
     </section>
 

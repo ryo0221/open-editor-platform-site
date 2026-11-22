@@ -187,3 +187,8 @@ dialog h2 { font-size: var(--h3); }
 .youtube .note { margin-top: 16px; }
 .yt-frame { aspect-ratio: 16 / 9; background: var(--ink); }
 .yt-frame iframe { width: 100%; height: 100%; border: 0; }
+
+/* PaoBub (screen-09) */
+.paobub-points, .paobub-works, .paobub .band { margin-top: 24px; }
+.paobub-works { display: grid; gap: 12px; }
+.paobub-actions { display: flex; flex-wrap: wrap; gap: 12px; }

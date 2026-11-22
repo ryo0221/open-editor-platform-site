@@ -319,17 +319,21 @@ test.describe('story-07 PaoBub を知る', () => {
     const section = page.locator('#paobub');
     await expect(page.locator('#paobub-h')).toBeInViewport();
     await expect(section).toContainText('Built with Open Editor Platform');
-    await expect(section).toContainText('仕様・画面・ワークフローを、人が確かめながら AI と対話して作る道具。');
+    await expect(section).toContainText('人と AI が同じ Project の成果物・工程・判断を扱うワークプレイスです。');
+    await expect(section).toContainText('Open Editor Platform の Editor でそのまま開いて直せます');
     await expect(section.locator('.status')).toHaveText('準備中');
-    await expect(section.locator('a')).toHaveCount(0);
+    await expect(section.locator('[data-paobub-point] h3')).toHaveText(['工程ごとに進める', '作るものを選ばない', '一人からチームまで']);
+    await expect(section.locator('[data-paobub-work]')).toHaveCount(6);
+    await expect(section.locator('[data-paobub-note]')).toContainText('まだ公開していません');
   });
 
-  test('test-23 [story-07.criterion-02] there is no external link for PaoBub and no link to private repositories anywhere', async ({ page }) => {
+  test('test-23 [story-07.criterion-02] PaoBub links only to the public dogfooding projects and the videos, and nothing links to private repositories', async ({ page }) => {
     pcOnly();
     await open(page);
-    await expect(page.locator('#paobub a')).toHaveCount(0);
+    await expect(page.locator('[data-paobub-link]')).toHaveCount(0);
+    expect(await page.locator('#paobub a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['https://github.com/ryo0221/paobub-dogfooding', '#youtube']);
     for (const href of await page.locator('a[href]').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href))) {
-      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
+      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub|paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
     }
   });
 
@@ -340,6 +344,7 @@ test.describe('story-07 PaoBub を知る', () => {
     await expect(link).toHaveAttribute('href', 'https://example.com/paobub');
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(page.locator('#paobub .status')).toHaveCount(0);
+    await expect(page.locator('[data-paobub-note]')).toHaveCount(0);
   });
 });
 
