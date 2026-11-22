@@ -327,11 +327,17 @@ test.describe('story-07 PaoBub を知る', () => {
     await expect(section.locator('[data-paobub-note]')).toContainText('まだ公開していません');
   });
 
-  test('test-23 [story-07.criterion-02] PaoBub links only to the public dogfooding projects and the videos, and nothing links to private repositories', async ({ page }) => {
+  test('test-23 [story-07.criterion-02] PaoBub projects open their playlist videos, PaoBub has no external link, and nothing links to private repositories', async ({ page }) => {
     pcOnly();
     await open(page);
     await expect(page.locator('[data-paobub-link]')).toHaveCount(0);
-    expect(await page.locator('#paobub a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['https://github.com/ryo0221/paobub-dogfooding', '#youtube']);
+    expect(await page.locator('#paobub a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['#youtube']);
+    // Each project opens its videos from the playlist in the page's player.
+    await expect(page.locator('[data-paobub-work="car"] [data-yt-play]')).toHaveCount(2);
+    await expect(page.locator('[data-paobub-work="manga"] [data-yt-play]')).toHaveAttribute('data-yt-play', 'WTsukuTWiu4');
+    await page.route(/youtube-nocookie\.com/, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>player</p>' }));
+    await page.locator('[data-paobub-work="watch"] [data-yt-play]').click();
+    await expect(page.locator('#yt-player iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/Ig6McNc-7dU?autoplay=1&rel=0');
     for (const href of await page.locator('a[href]').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href))) {
       expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub|paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
     }

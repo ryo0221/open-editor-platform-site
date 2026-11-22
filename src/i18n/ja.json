@@ -278,14 +278,13 @@
   "paobub.point3": "一人からチームまで",
   "paobub.point3.body": "一人での制作から、複数の組織が参加する Project までを、同じ権限と承認の仕組みで扱うことを目指して開発しています。",
   "paobub.worksHeading": "PaoBub で作った Project",
-  "paobub.worksLead": "実際の制作に PaoBub を使い、工程の定義・成果物・記録をまとめて公開しています。",
+  "paobub.worksLead": "実際の制作に PaoBub を使っています。それぞれの制作の様子を動画で見られます。",
   "paobub.work.manga": "学園ギャグ漫画「放課後ぐだぐだ部」第1話・第2話（16 ページ）",
   "paobub.work.watch": "スケルトンの手巻き腕時計「SK-01」の企画から詳細設計まで",
   "paobub.work.car": "ミッドシップの 2 人乗りスポーツカー「翔」の企画から詳細設計まで",
   "paobub.work.skytree": "スカイツリーを題材にした建設のデジタルツイン（公開情報からの近似）",
   "paobub.work.factory": "架空の e-Axle 工場のデジタルツイン",
   "paobub.work.shiraha": "オリジナルの可変機「白羽」のメカデザイン",
-  "paobub.worksLink": "Project の中身を見る（GitHub）",
   "paobub.videosLink": "制作の様子を動画で見る",
   "paobub.note": "PaoBub はまだ公開していません。公開したら、このページから案内します。"
 }

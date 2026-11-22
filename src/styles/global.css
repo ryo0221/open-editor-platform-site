@@ -192,3 +192,7 @@ dialog h2 { font-size: var(--h3); }
 .paobub-points, .paobub-works, .paobub .band { margin-top: 24px; }
 .paobub-works { display: grid; gap: 12px; }
 .paobub-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.paobub-work-list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.paobub-work-list li { display: grid; gap: 4px; padding-left: 16px; border-left: 3px solid var(--line); }
+.yt-link { justify-self: start; text-align: left; background: none; border: 0; padding: 6px 0; min-height: 36px; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; font-size: var(--small); }
+.yt-link::before { content: "▶ "; text-decoration: none; display: inline-block; margin-right: 4px; }

@@ -169,6 +169,12 @@ else {
   }
 }
 
+// PaoBub projects name their videos by YouTube id; the page shows only those still in the playlist snapshot.
+for (const work of site.paobub?.works ?? []) {
+  if (!(`paobub.work.${work.id}` in ja)) fail(`PaoBub project ${work.id} has no word paobub.work.${work.id}`);
+  for (const id of work.videos ?? []) if (!/^[A-Za-z0-9_-]{11}$/.test(id)) fail(`PaoBub project ${work.id}: "${id}" is not a YouTube video id`);
+}
+
 if (problems.length) {
   console.error(`Content check failed (${problems.length}):\n- ` + problems.join('\n- '));
   process.exit(1);

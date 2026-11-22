@@ -33,6 +33,8 @@ const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['
 // Purpose cut (top) and editor cut (below): each example names the editors it uses, and each editor
 // carries its own maturity, so "basic / specialized" never stands in for "public / experimental".
 const editorGroups = (['basic', 'specialized'] as const).map(group => ({ group, items: site.editors[group] }));
+// PaoBub projects link to their videos in the YouTube playlist; a video that left the playlist drops out by itself.
+const paobubWorks = site.paobub.works.map(work => ({ id: work.id, videos: work.videos.flatMap(id => youtubeVideos.filter(v => v.id === id)) }));
 const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.title`), case: w(`purposes.${p.id}.case`) }));
 ---
 <Base lang={lang}>
@@ -294,13 +296,17 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
         <div class="paobub-works" data-paobub-works>
           <h3>{w('paobub.worksHeading')}</h3>
           <p>{w('paobub.worksLead')}</p>
-          <ul class="links">
-            {['manga', 'watch', 'car', 'skytree', 'factory', 'shiraha'].map(id => <li data-paobub-work={id}>{w(`paobub.work.${id}`)}</li>)}
+          <ul class="paobub-work-list">
+            {paobubWorks.map(work => (
+              <li data-paobub-work={work.id}>
+                <span>{w(`paobub.work.${work.id}`)}</span>
+                {work.videos.map(v => (
+                  <button class="yt-link" type="button" data-yt-play={v.id} data-yt-title={v.title}><span class="visually-hidden">{w('youtube.play')}：</span><span lang="ja">{v.title}</span></button>
+                ))}
+              </li>
+            ))}
           </ul>
-          <p class="paobub-actions">
-            <a class="btn btn-small" href={site.links.paobubWorks} {...ext} data-paobub-works-link>{w('paobub.worksLink')}<span class="visually-hidden">{newTab}</span></a>
-            <a class="btn btn-small" href="#youtube">{w('paobub.videosLink')}</a>
-          </p>
+          <p class="paobub-actions"><a class="btn btn-small" href="#youtube">{w('paobub.videosLink')}</a></p>
         </div>
         {!paobubUrl && <p class="band band-soon" data-paobub-note>{w('paobub.note')}</p>}
       </div>

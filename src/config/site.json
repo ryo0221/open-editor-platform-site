@@ -21,7 +21,47 @@
   },
   "paobub": {
     "url": "",
-    "clip": ""
+    "clip": "",
+    "works": [
+      {
+        "id": "manga",
+        "videos": [
+          "WTsukuTWiu4"
+        ]
+      },
+      {
+        "id": "watch",
+        "videos": [
+          "Ig6McNc-7dU"
+        ]
+      },
+      {
+        "id": "car",
+        "videos": [
+          "lt1oQbh6DaE",
+          "HMHMCi74Ec4"
+        ]
+      },
+      {
+        "id": "skytree",
+        "videos": [
+          "a3IqLhcQkCU"
+        ]
+      },
+      {
+        "id": "factory",
+        "videos": [
+          "uwhjBPIC0Zw"
+        ]
+      },
+      {
+        "id": "shiraha",
+        "videos": [
+          "4AkUCVeM5xk",
+          "jxUKKCLXBro"
+        ]
+      }
+    ]
   },
   "purposes": [
     {
@@ -312,8 +352,7 @@
     "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md",
     "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md",
     "youtube": "https://www.youtube.com/@tokiwa_works",
-    "template": "https://github.com/ryo0221/open-editor-template",
-    "paobubWorks": "https://github.com/ryo0221/paobub-dogfooding"
+    "template": "https://github.com/ryo0221/open-editor-template"
   },
   "youtube": {
     "playlistId": "PLEC5yURUtX8g",

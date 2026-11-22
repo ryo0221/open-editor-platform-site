@@ -278,14 +278,13 @@
   "paobub.point3": "From one person to many teams",
   "paobub.point3.body": "It is being built to handle solo work and projects shared by several organizations with the same permissions and approvals.",
   "paobub.worksHeading": "Projects made with PaoBub",
-  "paobub.worksLead": "PaoBub is used for real work, and the workflow definitions, deliverables and records are published.",
+  "paobub.worksLead": "PaoBub is used for real work. Each project has videos of how it was made (in Japanese).",
   "paobub.work.manga": "School comedy manga, episodes 1 and 2 (16 pages)",
   "paobub.work.watch": "Skeleton hand-wound watch “SK-01”, from planning to detailed design",
   "paobub.work.car": "Mid-engine two-seat sports car, from planning to detailed design",
   "paobub.work.skytree": "Construction digital twin of a 634 m tower modelled on Tokyo Skytree (approximated from public information)",
   "paobub.work.factory": "Digital twin of a fictional e-Axle factory",
   "paobub.work.shiraha": "Mecha design of an original transforming machine",
-  "paobub.worksLink": "See the projects (GitHub)",
   "paobub.videosLink": "Watch how they were made",
   "paobub.note": "PaoBub is not public yet. We'll announce it on this page when it opens."
 }
