@@ -1,0 +1,8 @@
+// Cloudflare Workers static assets: the built dist/ is served as is (09 環境ごとの公開計画).
+{
+  "name": "open-editor-platform-site",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" },
+  // Branch builds run `wrangler preview`, which needs this block (it can stay empty).
+  "previews": {}
+}
