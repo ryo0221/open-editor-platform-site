@@ -375,6 +375,7 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <ul>
         <li><a href={site.links.plugins} {...ext}>{w('footer.plugins')}<span class="visually-hidden">{newTab}</span></a></li>
         <li><a href={site.links.template} {...ext}>{w('footer.template')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.workflowDefinitions} {...ext}>{w('footer.workflowDefinitions')}<span class="visually-hidden">{newTab}</span></a></li>
         <li><a href={site.links.youtube} {...ext}>{w('footer.youtube')}<span class="visually-hidden">{newTab}</span></a></li>
       </ul>
       <p class="credits">{w('footer.credits')}</p>
