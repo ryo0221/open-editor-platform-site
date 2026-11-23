@@ -84,6 +84,16 @@
       "image": ""
     },
     {
+      "id": "factory",
+      "editors": [
+        "factory",
+        "bim",
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
       "id": "car",
       "editors": [
         "cad"
@@ -93,6 +103,14 @@
     },
     {
       "id": "watch",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": false,
+      "image": ""
+    },
+    {
+      "id": "mecha",
       "editors": [
         "cad"
       ],
@@ -211,6 +229,10 @@
       },
       {
         "id": "construction",
+        "maturity": "experimental"
+      },
+      {
+        "id": "factory",
         "maturity": "experimental"
       },
       {

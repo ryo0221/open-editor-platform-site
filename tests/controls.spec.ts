@@ -83,7 +83,7 @@ test('test-42 [control-09] keyboard alone reaches the main button and the host p
     return false;
   };
   expect(await tabTo('[data-cta]', 15)).toBe(true);
-  expect(await tabTo('[data-way="hosts"] button', 40)).toBe(true);
+  expect(await tabTo('[data-way="hosts"] button', 50)).toBe(true);
   await page.keyboard.press('Enter');
   await expect(page.locator('#panel-hosts')).toBeVisible();
   await page.keyboard.press('Escape');

@@ -45,7 +45,7 @@ test.describe('story-01 初めて来て、何ができるかをつかむ', () =>
     pcOnly();
     await open(page);
     await expect(page.locator('[data-domains], [data-editors]')).toHaveCount(0);
-    await expect(page.locator('#editors [data-maturity]')).toHaveCount(19);
+    await expect(page.locator('#editors [data-maturity]')).toHaveCount(20);
     await expect(page.locator('#editors').getByRole('link', { name: /実装状況と制限/ })).toHaveAttribute('href', DOC('docs/status.md'));
   });
 
@@ -502,15 +502,15 @@ test.describe('story-11 スマートフォンで読む', () => {
 });
 
 test.describe('story-12 目的から事例を探す', () => {
-  test('test-44 [story-12.criterion-01] the purpose cut comes first and shows the eight agreed examples with their focus', async ({ page }) => {
+  test('test-44 [story-12.criterion-01] the purpose cut comes first and shows the ten agreed examples with their focus', async ({ page }) => {
     pcOnly();
     await open(page);
     const order = await page.evaluate(() => [...document.querySelectorAll('main section[id]')].map(s => s.id));
     expect(order.indexOf('purposes')).toBeLessThan(order.indexOf('editors'));
     expect(order.indexOf('editors')).toBeLessThan(order.indexOf('features'));
     const cards = page.locator('[data-purpose]');
-    await expect(cards.locator('h3')).toHaveText(['建築をつくる', '工事を計画する', 'クルマをデザインする', '時計をつくる', '回路基板を設計する', '漫画をつくる', '小説を書く', '物語の世界を再現する']);
-    await expect(cards.locator('.purpose-case')).toHaveText(['スカイツリーを題材にした BIM モデル', 'オフィスビルの工事現場のデジタルツイン', 'オープンカー「凪」', '機械式時計「SK-01」', 'センサー拡張基板と回路図', '漫画制作プロジェクト', '『関ケ原 — 静かな決断』', '『ガリヴァー旅行記』のデジタルツイン']);
+    await expect(cards.locator('h3')).toHaveText(['建築をつくる', '工事を計画する', '工場を計画する', 'クルマをデザインする', '時計をつくる', '可変機をデザインする', '回路基板を設計する', '漫画をつくる', '小説を書く', '物語の世界を再現する']);
+    await expect(cards.locator('.purpose-case')).toHaveText(['スカイツリーを題材にした BIM モデル', 'オフィスビルの工事現場のデジタルツイン', '架空の e-Axle 工場のデジタルツイン', 'オープンカー「凪」', '機械式時計「SK-01」', 'オリジナルの可変機「白羽」', 'センサー拡張基板と回路図', '漫画制作プロジェクト', '『関ケ原 — 静かな決断』', '『ガリヴァー旅行記』のデジタルツイン']);
     await expect(page.locator('[data-purpose="watch"]')).toContainText('部品、組立・分解、歯車と機構の動き');
   });
 
@@ -518,7 +518,7 @@ test.describe('story-12 目的から事例を探す', () => {
     pcOnly();
     // The variant build leaves every example unchecked.
     await open(page, VARIANT + '/');
-    await expect(page.locator('[data-purpose][data-state="checking"]')).toHaveCount(8);
+    await expect(page.locator('[data-purpose][data-state="checking"]')).toHaveCount(10);
     // and an unchecked example's image is not shipped at all.
     expect((await page.request.get(`${VARIANT}/purposes/novel.jpg`)).status()).toBe(404);
     for (const card of await page.locator('[data-purpose][data-state="checking"]').all()) {
@@ -535,8 +535,8 @@ test.describe('story-12b 確認済みの事例', () => {
   test('test-48 [story-12.criterion-02] a checked example shows its image and says where it comes from and that the public build does not include it', async ({ page }) => {
     pcOnly();
     await open(page);
-    await expect(page.locator('[data-purpose][data-state="ready"]')).toHaveCount(8);
-    for (const id of ['building', 'construction', 'car', 'watch', 'pcb', 'comic', 'novel', 'gulliver']) {
+    await expect(page.locator('[data-purpose][data-state="ready"]')).toHaveCount(10);
+    for (const id of ['building', 'construction', 'factory', 'car', 'watch', 'mecha', 'pcb', 'comic', 'novel', 'gulliver']) {
       const card = page.locator(`[data-purpose="${id}"]`);
       const img = card.locator('img');
       await expect(img).toHaveAttribute('src', new RegExp(`purposes/${id}\\.jpg$`));
@@ -570,15 +570,17 @@ test.describe('story-13 事例から Editor を知る', () => {
     await open(page);
     await expect(page.locator('[data-editor-group] h3')).toHaveText(['基本 Editor', '専用 Editor']);
     await expect(page.locator('[data-editor-group="basic"] [data-editor] strong')).toHaveText(['Document', 'Slide', 'Whiteboard', 'Design', 'Structured Data', 'Structured Graph', 'Geo', 'React UI', 'Animation', 'Review / File Viewer']);
-    await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図', '施工工程', '回路基板', '回路図']);
+    await expect(page.locator('[data-editor-group="specialized"] [data-editor] strong')).toHaveText(['BIM', 'CAD', 'Character', '漫画', '小説', '空想地図', '施工工程', '工場', '回路基板', '回路図']);
     // Structured Graph left Preview on 2026-11-14 (schema 3, older schemas migrated on read).
     await expect(page.locator('[data-editor="graph"] [data-maturity]')).toHaveText('公開版に収録');
     await expect(page.locator('#editors')).not.toContainText('Preview');
     // Specialized is not the same as experimental: Ryo accepted every specialized editor on 2026-11-14.
     for (const id of ['bim', 'cad', 'character', 'comic', 'novel', 'fictionMap']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に収録');
     // The packages added to the public build on 2026-11-14 are experimental there, and say so.
-    for (const id of ['construction', 'pcb', 'schematic']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
+    for (const id of ['construction', 'factory', 'pcb', 'schematic']) await expect(page.locator(`[data-editor="${id}"] [data-maturity]`)).toHaveText('公開版に試験的に収録');
     await expect(page.locator('[data-purpose="pcb"] .purpose-editors a')).toHaveText(['回路基板', '回路図', 'CAD']);
+    await expect(page.locator('[data-purpose="factory"] .purpose-editors a')).toHaveText(['工場', 'BIM', 'CAD']);
+    await expect(page.locator('[data-purpose="mecha"] .purpose-editors a')).toHaveText(['CAD']);
     // The editor cut is laid out as cards, two columns on a PC (guards against a stray rule swallowing the styles).
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('display', 'grid');
     await expect(page.locator('[data-editor-group="basic"] .editor-list')).toHaveCSS('list-style-type', 'none');
