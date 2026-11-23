@@ -1,4 +1,5 @@
-// Panels, the looping Short, the video player and the copy button. Nothing here talks to other servers.
+// Panels, the looping Short, the video player and the copy button. Nothing here talks to other servers,
+// except the YouTube player, which loads from youtube-nocookie.com only after a reader presses Play.
 type Clip = { id?: string; name?: string; title?: string; clip: string; poster: string; captions: { ja: string; en: string } };
 type Data = { lang: 'ja' | 'en'; useCases: Clip[]; summary: Clip | null };
 
@@ -130,6 +131,30 @@ function setupPlayer(data: Data) {
   }
 }
 
+// The YouTube player is created on Play and removed on close, so nothing is loaded before or kept after.
+function setupYoutube() {
+  const dialog = $<HTMLDialogElement>('#yt-player');
+  if (!dialog) return;
+  const frame = $<HTMLElement>('[data-yt-frame]', dialog)!;
+  const title = $<HTMLElement>('[data-yt-player-title]', dialog)!;
+  const fallback = $<HTMLAnchorElement>('[data-yt-fallback]', dialog)!;
+  for (const btn of $$<HTMLButtonElement>('[data-yt-play]')) {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.ytPlay!;
+      if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+      const iframe = document.createElement('iframe');
+      Object.assign(iframe, { src: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`, title: btn.dataset.ytTitle ?? '', allowFullscreen: true });
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.replaceChildren(iframe);
+      title.textContent = btn.dataset.ytTitle ?? '';
+      fallback.href = `https://www.youtube.com/watch?v=${id}`;
+      openDialog(dialog, btn);
+    });
+  }
+  dialog.addEventListener('close', () => frame.replaceChildren());
+}
+
 // On phones the menu drops down over the page, so picking a section closes it.
 function setupMenu() {
   const menu = $<HTMLDetailsElement>('details.menu');
@@ -148,6 +173,7 @@ export function setup() {
   setupDialogs();
   setupShort();
   setupPlayer(data);
+  setupYoutube();
   setupMenu();
   setupLangSwitch();
 }

@@ -26,7 +26,10 @@ for (const [lang, words] of [['ja', ja], ['en', en]]) {
 const forbidden = [/\d{4}\s*年/, /\b\d{4}[-/.]\d{1,2}[-/.]\d{1,2}\b/, /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, /\d+\s*月\s*\d+\s*日/, /[¥$€£₩₹]\s*\d/, /\b(USD|EUR|JPY|GBP)\s*\d/i, /\d\s*(dollars?|euros?|pounds?|yen|USD|EUR|JPY|GBP)\b/i, /\d\s*円/, /無料/, /\bfree\b/i, /対応済み/, /モバイル対応/, /mobile[- ]ready/i, /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\s+\d/i, /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\b\.?\b/i, /\b(19|20)\d{2}\b/];
 for (const [lang, words] of [['ja', ja], ['en', en]]) {
   for (const [key, text] of Object.entries(words)) {
-    for (const re of forbidden) if (re.test(text)) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
+    // The beta commercial-license policy (open-editor-platform BETA-COMMERCIAL-POLICY.md, Ryo 2026-11-21) is the one
+    // decided offer the page may call free; prices, dates and other free claims stay out everywhere.
+    const betaWords = key.startsWith('beta.') || key === 'nav.beta' || key === 'faq.a6';
+    for (const re of forbidden) if (re.test(text) && !(betaWords && (String(re) === '/無料/' || String(re) === '/\\bfree\\b/i'))) fail(`word "${key}" (${lang}) matches ${re}: ${text}`);
   }
 }
 
@@ -61,7 +64,7 @@ const isPrivateRepo = value => {
     const u = new URL(value);
     if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
     const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => decodeURIComponent(s).toLowerCase());
-    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform', 'open-editor-community'].includes(repo.replace(/\.git$/, ''));
+    return owner === 'ryo0221' && ['paobub', 'paobub-mvp', 'editor-platform', 'open-editor-community'].includes(repo.replace(/\.git$/, ''));
   } catch { return true; } // unreadable: treat as private
 };
 // Every site link is required; only the PaoBub URL may stay empty before its release.
@@ -150,6 +153,26 @@ for (const p of site.purposes ?? []) {
     else file(p.image, `purpose ${p.id} image`, IMAGE);
     for (const [lang, words] of [['ja', ja], ['en', en]]) if (words[`purposes.${p.id}.source`] === words['purposes.building.source'] && /確認中|Checking/.test(words[`purposes.${p.id}.source`])) fail(`purpose ${p.id}: the source note (${lang}) still says it is being checked`);
   }
+}
+
+// YouTube playlist snapshot (scripts/fetch-youtube.mjs): plain video ids and titles, thumbnails as local files.
+const yt = site.youtube ?? {};
+if (!yt.snapshot || !existsSync(yt.snapshot)) fail(`youtube.snapshot ${yt.snapshot} is missing`);
+else {
+  const snap = read(yt.snapshot);
+  // Right after the playlist changes in the settings, the build runs before the workflow refreshes the snapshot; it shows the old list until then.
+  if (snap.playlistId !== yt.playlistId) console.warn(`Note: the YouTube snapshot is for playlist "${snap.playlistId}" but the settings name "${yt.playlistId}"; the workflow will refresh it (or run scripts/fetch-youtube.mjs).`);
+  for (const v of snap.videos ?? []) {
+    if (!/^[A-Za-z0-9_-]{11}$/.test(v.id ?? '')) fail(`YouTube video id "${v.id}" is not a video id`);
+    if (!String(v.title ?? '').trim()) fail(`YouTube video ${v.id} has no title`);
+    file(v.thumb, `YouTube video ${v.id} thumbnail`, IMAGE);
+  }
+}
+
+// PaoBub projects name their videos by YouTube id; the page shows only those still in the playlist snapshot.
+for (const work of site.paobub?.works ?? []) {
+  if (!(`paobub.work.${work.id}` in ja)) fail(`PaoBub project ${work.id} has no word paobub.work.${work.id}`);
+  for (const id of work.videos ?? []) if (!/^[A-Za-z0-9_-]{11}$/.test(id)) fail(`PaoBub project ${work.id}: "${id}" is not a YouTube video id`);
 }
 
 if (problems.length) {

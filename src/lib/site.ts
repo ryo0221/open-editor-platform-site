@@ -36,7 +36,7 @@ const isPrivateRepo = (value: string) => {
     const u = new URL(value);
     if (!['github.com', 'www.github.com'].includes(u.hostname.toLowerCase().replace(/\.$/, ''))) return false;
     const [owner, repo = ''] = u.pathname.split('/').filter(Boolean).map(s => decodeURIComponent(s).toLowerCase());
-    return owner === 'ryo0221' && ['paobub-mvp', 'editor-platform', 'open-editor-community'].includes(repo.replace(/\.git$/, ''));
+    return owner === 'ryo0221' && ['paobub', 'paobub-mvp', 'editor-platform', 'open-editor-community'].includes(repo.replace(/\.git$/, ''));
   } catch { return true; } // unreadable: treat as private
 };
 // Parsed like isHttpsUrl in check-content.mjs, so a spelling it accepts (HTTPS://…) is not hidden here.
@@ -62,3 +62,8 @@ export function chapters(lang: Lang): { start: number; title: string }[] {
     return m ? [{ start: toSec(m[1]), title: m[2].trim() }] : [];
   });
 }
+
+// Videos of the YouTube playlist, from the snapshot that .github/workflows/youtube.yml refreshes (scripts/fetch-youtube.mjs).
+// Thumbnails are files in public/, so the page loads nothing from YouTube until a reader presses Play.
+export type YoutubeVideo = { id: string; title: string; published: string; thumb: string };
+export const youtubeVideos: YoutubeVideo[] = JSON.parse(readFileSync(join(process.cwd(), site.youtube.snapshot), 'utf8')).videos;

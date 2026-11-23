@@ -1,6 +1,7 @@
 // One test per acceptance criterion in 03 訪問者のストーリー (2026-11 改訂案), plus the 07 controls that a browser can check.
 // Each title starts with its test ID and the criteria it covers; scripts/test-trace.mjs builds the trace table from them.
 import { test, expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const VARIANT = 'http://localhost:4322'; // built from tests/fixtures/variant.json (a public PaoBub URL, the Geo clip withheld)
 const pcOnly = () => test.skip(test.info().project.name !== 'pc', 'checked at PC width');
@@ -318,17 +319,27 @@ test.describe('story-07 PaoBub を知る', () => {
     const section = page.locator('#paobub');
     await expect(page.locator('#paobub-h')).toBeInViewport();
     await expect(section).toContainText('Built with Open Editor Platform');
-    await expect(section).toContainText('仕様・画面・ワークフローを、人が確かめながら AI と対話して作る道具。');
+    await expect(section).toContainText('人と AI が同じ Project の成果物・工程・判断を扱うワークプレイスです。');
+    await expect(section).toContainText('Open Editor Platform の Editor でそのまま開いて直せます');
     await expect(section.locator('.status')).toHaveText('準備中');
-    await expect(section.locator('a')).toHaveCount(0);
+    await expect(section.locator('[data-paobub-point] h3')).toHaveText(['工程ごとに進める', '作るものを選ばない', '一人からチームまで']);
+    await expect(section.locator('[data-paobub-work]')).toHaveCount(6);
+    await expect(section.locator('[data-paobub-note]')).toContainText('まだ公開していません');
   });
 
-  test('test-23 [story-07.criterion-02] there is no external link for PaoBub and no link to private repositories anywhere', async ({ page }) => {
+  test('test-23 [story-07.criterion-02] PaoBub projects open their playlist videos, PaoBub has no external link, and nothing links to private repositories', async ({ page }) => {
     pcOnly();
     await open(page);
-    await expect(page.locator('#paobub a')).toHaveCount(0);
+    await expect(page.locator('[data-paobub-link]')).toHaveCount(0);
+    expect(await page.locator('#paobub a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['#youtube']);
+    // Each project opens its videos from the playlist in the page's player.
+    await expect(page.locator('[data-paobub-work="car"] [data-yt-play]')).toHaveCount(2);
+    await expect(page.locator('[data-paobub-work="manga"] [data-yt-play]')).toHaveAttribute('data-yt-play', 'WTsukuTWiu4');
+    await page.route(/youtube-nocookie\.com/, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>player</p>' }));
+    await page.locator('[data-paobub-work="watch"] [data-yt-play]').click();
+    await expect(page.locator('#yt-player iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/Ig6McNc-7dU?autoplay=1&rel=0');
     for (const href of await page.locator('a[href]').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href))) {
-      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
+      expect(href).not.toMatch(/github\.com\/ryo0221\/(paobub|paobub-mvp|editor-platform|open-editor-community)(\/|$)/);
     }
   });
 
@@ -339,6 +350,7 @@ test.describe('story-07 PaoBub を知る', () => {
     await expect(link).toHaveAttribute('href', 'https://example.com/paobub');
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(page.locator('#paobub .status')).toHaveCount(0);
+    await expect(page.locator('[data-paobub-note]')).toHaveCount(0);
   });
 });
 
@@ -462,12 +474,12 @@ test.describe('story-11 スマートフォンで読む', () => {
     }
   });
 
-  test('test-34 [story-11.criterion-02] the three cards stack vertically and each states its status in text', async ({ page }) => {
+  test('test-34 [story-11.criterion-02] the four cards stack vertically and each states its status in text', async ({ page }) => {
     phoneOnly();
     await open(page);
     const boxes = await page.locator('[data-way]').evaluateAll(els => els.map(e => e.getBoundingClientRect()));
     for (let i = 1; i < boxes.length; i++) expect(boxes[i].top).toBeGreaterThan(boxes[i - 1].bottom - 1);
-    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済みの範囲を案内', '今後の対応を予定']);
+    await expect(page.locator('[data-way] .status')).toHaveText(['公開済み', '公開済み', '公開済みの範囲を案内', '今後の対応を予定']);
   });
 
   test('test-35 [story-11.criterion-01] picking a section in the phone menu closes the menu', async ({ page }) => {
@@ -588,5 +600,86 @@ test.describe('story-14 一緒に作る', () => {
     for (const a of await page.locator('[data-contribute] a').all()) await expect(a).toHaveAttribute('target', '_blank');
     // A code PR needs a rights check first (CONTRIBUTOR-LICENSING); the page must not suggest it merges as is.
     await expect(page.locator('[data-contribute="code"]')).toContainText('権利の確認');
+  });
+});
+
+test.describe('story-15 β版の無料提供を知る', () => {
+  test('test-50 [story-15.criterion-01] the beta section says the commercial license is planned to be free during the beta, paid from GA with advance notice, and not open yet', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    await page.locator('.nav-wide').getByRole('link', { name: 'β版の無料提供' }).click();
+    await expect(page.locator('#beta-h')).toBeInViewport();
+    await expect(page.locator('[data-beta] h3')).toHaveText(['いま：AGPLv3 なら無料', 'β版の期間：商用ライセンスも無料', '正式版（GA）から：有料']);
+    await expect(page.locator('[data-beta="beta"]')).toContainText('終わりの日はあらかじめ決めておらず');
+    await expect(page.locator('[data-beta="ga"]')).toContainText('3 か月以上かつ 90 日以上前に公表します');
+    // The policy is not a license grant and no agreement is signed yet (BETA-COMMERCIAL-POLICY.md).
+    await expect(page.locator('[data-beta-note]')).toContainText('β版の契約はまだ結んでおらず');
+    // Inquiries go through public GitHub Issues (Ryo, 2026-11-23); the agreement is prepared after one arrives.
+    await expect(page.locator('[data-beta-contact]')).toContainText('社外秘の情報は書かないでください');
+    await expect(page.locator('[data-beta-inquiry]')).toHaveAttribute('href', 'https://github.com/ryo0221/open-editor-platform/issues/new');
+    await expect(page.locator('[data-beta-inquiry]')).toHaveAttribute('target', '_blank');
+    await expect(page.locator('[data-beta-policy]')).toHaveAttribute('href', DOC('BETA-COMMERCIAL-POLICY.md'));
+    await expect(page.locator('#beta a[href$="COMMERCIAL-LICENSING.md"]')).toHaveCount(1);
+    // No price or date beyond the documented zero fee and notice period.
+    expect(await page.locator('#beta').innerText()).not.toMatch(/円|¥|\d{4}\s*年/);
+  });
+});
+
+test.describe('story-16 YouTube チャンネルを知る', () => {
+  test('test-51 [story-16.criterion-01] the YouTube section introduces the TOKIWA channel and links to it in a new tab, without embedding a player', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('#youtube-h')).toHaveText('TOKIWA の YouTube チャンネル');
+    await expect(page.locator('[data-youtube]')).toHaveAttribute('href', 'https://www.youtube.com/@tokiwa_works');
+    await expect(page.locator('[data-youtube]')).toHaveAttribute('target', '_blank');
+    await expect(page.locator('footer a[href="https://www.youtube.com/@tokiwa_works"]')).toHaveCount(1);
+    await expect(page.locator('iframe')).toHaveCount(0);
+  });
+});
+
+test.describe('story-16b YouTube の再生リストを見る', () => {
+  test('test-52 [story-16.criterion-02] playlist videos show local thumbnails and load the youtube-nocookie player only after Play', async ({ page }) => {
+    const external: string[] = [];
+    page.on('request', r => { if (!r.url().startsWith(VARIANT)) external.push(r.url()); });
+    await page.route(/youtube-nocookie\.com/, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>player</p>' }));
+    await page.goto(VARIANT + '/', { waitUntil: 'load' });
+    await page.locator('#youtube').scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-yt]')).toHaveCount(2);
+    await expect(page.locator('[data-yt] h3')).toHaveText(['テスト動画 1：Editor Platform で作る', 'テスト動画 2：作品のメイキング']);
+    for (const img of await page.locator('[data-yt] img').all()) expect(await img.getAttribute('src')).toMatch(/^\/posters\//);
+    await expect(page.locator('[data-yt-note]')).toContainText('押すまで YouTube には接続しません');
+    await expect(page.locator('iframe')).toHaveCount(0);
+    expect(external).toEqual([]);
+    await page.locator('[data-yt-play="BBBBBBBBBBB"]').click();
+    const dialog = page.locator('#yt-player');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/BBBBBBBBBBB?autoplay=1&rel=0');
+    await expect(dialog.locator('[data-yt-fallback]')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=BBBBBBBBBBB');
+    await dialog.getByRole('button', { name: '閉じる' }).click();
+    await expect(dialog.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('[data-yt-play="BBBBBBBBBBB"]')).toBeFocused();
+  });
+
+  test('test-53 [story-16.criterion-02] the page lists the playlist snapshot with thumbnails served from the site', async ({ page }) => {
+    pcOnly();
+    const snapshot = JSON.parse(readFileSync('src/data/youtube.json', 'utf8'));
+    await open(page);
+    await expect(page.locator('[data-yt]')).toHaveCount(snapshot.videos.length);
+    for (const img of await page.locator('[data-yt] img').all()) expect(await img.getAttribute('src')).toMatch(/^\/youtube\/[A-Za-z0-9_-]{11}\.jpg$/);
+    await expect(page.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('[data-youtube]')).toBeVisible();
+  });
+});
+
+test.describe('story-17 自分の Editor を作る', () => {
+  test('test-54 [story-17.criterion-01] the ways section introduces the public editor template and links to it, also from the footer', async ({ page }) => {
+    pcOnly();
+    await open(page);
+    const card = page.locator('[data-way="template"]');
+    await expect(card.locator('h3')).toHaveText('自分の Editor を作る');
+    await expect(card.locator('.status')).toHaveText('公開済み');
+    await expect(card).toContainText('npm ci と npm run dev');
+    await expect(card).toContainText('AGPLv3');
+    await expect(page.locator('[data-template]')).toHaveAttribute('href', 'https://github.com/ryo0221/open-editor-template');
+    await expect(page.locator('footer a[href="https://github.com/ryo0221/open-editor-template"]')).toHaveCount(1);
   });
 });

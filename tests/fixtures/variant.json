@@ -21,7 +21,47 @@
   },
   "paobub": {
     "url": "https://example.com/paobub",
-    "clip": ""
+    "clip": "",
+    "works": [
+      {
+        "id": "manga",
+        "videos": [
+          "WTsukuTWiu4"
+        ]
+      },
+      {
+        "id": "watch",
+        "videos": [
+          "Ig6McNc-7dU"
+        ]
+      },
+      {
+        "id": "car",
+        "videos": [
+          "lt1oQbh6DaE",
+          "HMHMCi74Ec4"
+        ]
+      },
+      {
+        "id": "skytree",
+        "videos": [
+          "a3IqLhcQkCU"
+        ]
+      },
+      {
+        "id": "factory",
+        "videos": [
+          "uwhjBPIC0Zw"
+        ]
+      },
+      {
+        "id": "shiraha",
+        "videos": [
+          "4AkUCVeM5xk",
+          "jxUKKCLXBro"
+        ]
+      }
+    ]
   },
   "purposes": [
     {
@@ -308,7 +348,15 @@
     "plugins": "https://github.com/ryo0221/editor-platform-plugins",
     "issuesSite": "https://github.com/ryo0221/open-editor-platform-site/issues",
     "issuesCore": "https://github.com/ryo0221/open-editor-platform/issues",
+    "commercialInquiry": "https://github.com/ryo0221/open-editor-platform/issues/new",
     "issuesPlugins": "https://github.com/ryo0221/editor-platform-plugins/issues",
-    "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md"
+    "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md",
+    "youtube": "https://www.youtube.com/@tokiwa_works",
+    "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md",
+    "template": "https://github.com/ryo0221/open-editor-template"
+  },
+  "youtube": {
+    "playlistId": "PLfixture0000",
+    "snapshot": "tests/fixtures/youtube.json"
   }
 }

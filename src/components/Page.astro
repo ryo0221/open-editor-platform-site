@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { t, site, asset, pageUrl, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, clipLength, type Lang } from '../lib/site';
+import { t, site, asset, pageUrl, useCaseReady, overviewReady, isPublicPaobubUrl, chapters, webm, clipLength, youtubeVideos, type Lang } from '../lib/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -29,10 +29,12 @@ const faq = [
   { n: 6, link: site.links.licenseGuide },
   { n: 7 },
 ];
-const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#community', 'nav.community'], ['#contribute', 'nav.contribute'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
+const navLinks = [['#purposes', 'nav.purposes'], ['#editors', 'nav.editors'], ['#features', 'nav.features'], ['#ways', 'nav.ways'], ['#beta', 'nav.beta'], ['#community', 'nav.community'], ['#contribute', 'nav.contribute'], ['#paobub', 'nav.paobub'], ['#faq', 'nav.faq']];
 // Purpose cut (top) and editor cut (below): each example names the editors it uses, and each editor
 // carries its own maturity, so "basic / specialized" never stands in for "public / experimental".
 const editorGroups = (['basic', 'specialized'] as const).map(group => ({ group, items: site.editors[group] }));
+// PaoBub projects link to their videos in the YouTube playlist; a video that left the playlist drops out by itself.
+const paobubWorks = site.paobub.works.map(work => ({ id: work.id, videos: work.videos.flatMap(id => youtubeVideos.filter(v => v.id === id)) }));
 const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.title`), case: w(`purposes.${p.id}.case`) }));
 ---
 <Base lang={lang}>
@@ -188,12 +190,18 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           <h2 id="ways-h">{w('ways.heading')}</h2>
           <p>{w('ways.lead')}</p>
         </div>
-        <div class="grid3">
+        <div class="grid4 ways">
           <div class="card" data-way="playground">
             <h3>{w('ways.playground')}</h3>
             <p><span class="status status-available">{w('badge.public')}</span></p>
             <p>{w('ways.playground.body')}</p>
             <a class="btn btn-small" href={site.links.run} {...ext}>{w('ways.playground.link')}<span class="visually-hidden">{newTab}</span></a>
+          </div>
+          <div class="card" data-way="template">
+            <h3>{w('ways.template')}</h3>
+            <p><span class="status status-available">{w('badge.public')}</span></p>
+            <p>{w('ways.template.body')}</p>
+            <a class="btn btn-small" href={site.links.template} {...ext} data-template>{w('ways.template.link')}<span class="visually-hidden">{newTab}</span></a>
           </div>
           <div class="card" data-way="embedding">
             <h3>{w('ways.embedding')}</h3>
@@ -208,6 +216,28 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
             <button class="btn btn-small" type="button" data-open="panel-hosts">{w('ways.hosts.button')}</button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="section beta" id="beta" aria-labelledby="beta-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p><span class="status status-planned" data-beta-stage>{w('beta.badge')}</span></p>
+          <h2 id="beta-h">{w('beta.heading')}</h2>
+          <p>{w('beta.lead')}</p>
+        </div>
+        <div class="grid3">
+          {['agpl', 'beta', 'ga'].map(id => (
+            <div class="card" data-beta={id}><h3>{w(`beta.${id}`)}</h3><p>{w(`beta.${id}.body`)}</p></div>
+          ))}
+        </div>
+        <p class="band band-soon" data-beta-note>{w('beta.note')}</p>
+        <p data-beta-contact>{w('beta.contact')}</p>
+        <ul class="links">
+          <li><a href={site.links.betaPolicy} {...ext} data-beta-policy>{w('beta.policyLink')}<span class="visually-hidden">{newTab}</span></a></li>
+          <li><a href={site.links.commercialLicense} {...ext}>{w('beta.commercialLink')}<span class="visually-hidden">{newTab}</span></a></li>
+          <li><a href={site.links.commercialInquiry} {...ext} data-beta-inquiry>{w('beta.contactLink')}<span class="visually-hidden">{newTab}</span></a></li>
+        </ul>
       </div>
     </section>
 
@@ -260,6 +290,57 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           <p>{w('paobub.body')}</p>
           {paobubUrl && <p><a class="btn" href={paobubUrl} {...ext} data-paobub-link>{w('paobub.visit')}<span class="visually-hidden">{newTab}</span></a></p>}
         </div>
+        <div class="grid3 paobub-points">
+          {[1, 2, 3].map(i => (
+            <div class="card" data-paobub-point={i}><h3>{w(`paobub.point${i}`)}</h3><p>{w(`paobub.point${i}.body`)}</p></div>
+          ))}
+        </div>
+        <div class="paobub-works" data-paobub-works>
+          <h3>{w('paobub.worksHeading')}</h3>
+          <p>{w('paobub.worksLead')}</p>
+          <ul class="paobub-work-list">
+            {paobubWorks.map(work => (
+              <li data-paobub-work={work.id}>
+                <span>{w(`paobub.work.${work.id}`)}</span>
+                {work.videos.map(v => (
+                  <button class="yt-link" type="button" data-yt-play={v.id} data-yt-title={v.title}><span class="visually-hidden">{w('youtube.play')}：</span><span lang="ja">{v.title}</span></button>
+                ))}
+              </li>
+            ))}
+          </ul>
+          <p class="paobub-actions"><a class="btn btn-small" href="#youtube">{w('paobub.videosLink')}</a></p>
+        </div>
+        {!paobubUrl && <p class="band band-soon" data-paobub-note>{w('paobub.note')}</p>}
+      </div>
+    </section>
+
+    <section class="section youtube" id="youtube" aria-labelledby="youtube-h">
+      <div class="wrap">
+        <div class="body">
+          <p class="eyebrow">{w('youtube.eyebrow')}</p>
+          <h2 id="youtube-h">{w('youtube.heading')}</h2>
+          <p>{w('youtube.body')}</p>
+          <p><a class="btn" href={site.links.youtube} {...ext} data-youtube>{w('youtube.link')}<span class="visually-hidden">{newTab}</span></a></p>
+        </div>
+        {youtubeVideos.length > 0 && (
+          <>
+            <div class="grid3 yt-list" data-yt-list>
+              {youtubeVideos.map(v => (
+                <article class="card yt" data-yt={v.id}>
+                  <button class="yt-thumb" type="button" data-yt-play={v.id} data-yt-title={v.title}>
+                    <img src={asset(v.thumb)} width="480" height="360" alt={w('youtube.thumbAlt', { title: v.title })} loading="lazy" />
+                    <span class="yt-play">{w('youtube.play')}</span>
+                  </button>
+                  <div class="uc-body">
+                    <h3 lang="ja">{v.title}</h3>
+                    <p><a href={`https://www.youtube.com/watch?v=${v.id}`} {...ext}>{w('youtube.watchOn')}<span class="visually-hidden">{newTab}</span></a></p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <p class="note" data-yt-note>{w('youtube.privacy')}</p>
+          </>
+        )}
       </div>
     </section>
 
@@ -293,6 +374,8 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <p>{w('footer.issuesNote')}</p>
       <ul>
         <li><a href={site.links.plugins} {...ext}>{w('footer.plugins')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.template} {...ext}>{w('footer.template')}<span class="visually-hidden">{newTab}</span></a></li>
+        <li><a href={site.links.youtube} {...ext}>{w('footer.youtube')}<span class="visually-hidden">{newTab}</span></a></li>
       </ul>
       <p class="credits">{w('footer.credits')}</p>
     </div>
@@ -334,6 +417,16 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
       <p><a href="#paobub" data-close-to="#paobub">{w('panel.embedding.paobub')}</a></p>
     </div>
   </dialog>
+
+  {youtubeVideos.length > 0 && (
+    <dialog id="yt-player" class="player" aria-labelledby="yt-player-h">
+      <div class="dialog-head"><h2 id="yt-player-h" lang="ja" data-yt-player-title></h2><button class="btn btn-small" type="button" data-close>{w('player.close')}</button></div>
+      <div class="dialog-body">
+        <div class="yt-frame" data-yt-frame></div>
+        <p><a href="" {...ext} data-yt-fallback>{w('youtube.fallback')}<span class="visually-hidden">{newTab}</span></a></p>
+      </div>
+    </dialog>
+  )}
 
   {showOverview || playable.length > 0 ? (
     <dialog id="player" class="player" aria-labelledby="player-h">
