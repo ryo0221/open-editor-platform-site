@@ -612,8 +612,12 @@ test.describe('story-15 β版の無料提供を知る', () => {
     await expect(page.locator('[data-beta] h3')).toHaveText(['いま：AGPLv3 なら無料', 'β版の期間：商用ライセンスも無料', '正式版（GA）から：有料']);
     await expect(page.locator('[data-beta="beta"]')).toContainText('終わりの日はあらかじめ決めておらず');
     await expect(page.locator('[data-beta="ga"]')).toContainText('3 か月以上かつ 90 日以上前に公表します');
-    // The policy is not a license grant and the program is not open (BETA-COMMERCIAL-POLICY.md).
-    await expect(page.locator('[data-beta-note]')).toContainText('受け付けはまだ始めておらず');
+    // The policy is not a license grant and no agreement is signed yet (BETA-COMMERCIAL-POLICY.md).
+    await expect(page.locator('[data-beta-note]')).toContainText('β版の契約はまだ結んでおらず');
+    // Inquiries go through public GitHub Issues (Ryo, 2026-11-23); the agreement is prepared after one arrives.
+    await expect(page.locator('[data-beta-contact]')).toContainText('社外秘の情報は書かないでください');
+    await expect(page.locator('[data-beta-inquiry]')).toHaveAttribute('href', 'https://github.com/ryo0221/open-editor-platform/issues/new');
+    await expect(page.locator('[data-beta-inquiry]')).toHaveAttribute('target', '_blank');
     await expect(page.locator('[data-beta-policy]')).toHaveAttribute('href', DOC('BETA-COMMERCIAL-POLICY.md'));
     await expect(page.locator('#beta a[href$="COMMERCIAL-LICENSING.md"]')).toHaveCount(1);
     // No price or date beyond the documented zero fee and notice period.

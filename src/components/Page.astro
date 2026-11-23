@@ -232,9 +232,11 @@ const purposes = site.purposes.map(p => ({ ...p, title: w(`purposes.${p.id}.titl
           ))}
         </div>
         <p class="band band-soon" data-beta-note>{w('beta.note')}</p>
+        <p data-beta-contact>{w('beta.contact')}</p>
         <ul class="links">
           <li><a href={site.links.betaPolicy} {...ext} data-beta-policy>{w('beta.policyLink')}<span class="visually-hidden">{newTab}</span></a></li>
           <li><a href={site.links.commercialLicense} {...ext}>{w('beta.commercialLink')}<span class="visually-hidden">{newTab}</span></a></li>
+          <li><a href={site.links.commercialInquiry} {...ext} data-beta-inquiry>{w('beta.contactLink')}<span class="visually-hidden">{newTab}</span></a></li>
         </ul>
       </div>
     </section>

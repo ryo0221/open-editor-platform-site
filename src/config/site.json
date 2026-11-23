@@ -348,6 +348,7 @@
     "plugins": "https://github.com/ryo0221/editor-platform-plugins",
     "issuesSite": "https://github.com/ryo0221/open-editor-platform-site/issues",
     "issuesCore": "https://github.com/ryo0221/open-editor-platform/issues",
+    "commercialInquiry": "https://github.com/ryo0221/open-editor-platform/issues/new",
     "issuesPlugins": "https://github.com/ryo0221/editor-platform-plugins/issues",
     "contributing": "https://github.com/ryo0221/open-editor-platform/blob/main/CONTRIBUTING.md",
     "betaPolicy": "https://github.com/ryo0221/open-editor-platform/blob/main/BETA-COMMERCIAL-POLICY.md",
