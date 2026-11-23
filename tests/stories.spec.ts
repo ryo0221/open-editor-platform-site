@@ -683,3 +683,11 @@ test.describe('story-17 自分の Editor を作る', () => {
     await expect(page.locator('footer a[href="https://github.com/ryo0221/open-editor-template"]')).toHaveCount(1);
   });
 });
+
+test.describe('workflow definitions', () => {
+  test('test-55 the footer links to the public workflow definitions, never the private repo', async ({ page }) => {
+    await open(page);
+    await expect(page.locator('footer a[href="https://github.com/ryo0221/open-workflow-definitions"]')).toHaveCount(1);
+    await expect(page.locator('a[href^="https://github.com/ryo0221/workflow-definitions"]')).toHaveCount(0);
+  });
+});

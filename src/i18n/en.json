@@ -273,6 +273,7 @@
   "ways.template.body": "Create your repository from Open Editor Template and run it with npm ci and npm run dev. A card editor shows display, editing, undo/redo, saving, operation proposals and a distributable build. No checkout of the core is needed (AGPLv3).",
   "ways.template.link": "See the template",
   "footer.template": "GitHub (editor template)",
+  "footer.workflowDefinitions": "GitHub (workflow definitions)",
   "paobub.point1": "Step by step",
   "paobub.point1.body": "A project is split into steps that follow a workflow definition. People check and accept what AI makes, and each accepted version is pinned in Git.",
   "paobub.point2": "Any kind of work",

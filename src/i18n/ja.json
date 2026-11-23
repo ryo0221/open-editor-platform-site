@@ -273,6 +273,7 @@
   "ways.template.body": "Open Editor Template から自分のリポジトリを作り、npm ci と npm run dev で動かせます。カードの Editor を例に、表示・編集・Undo/Redo・保存・操作提案・配布用のビルドまで揃っています。本体のチェックアウトは要りません（AGPLv3）。",
   "ways.template.link": "テンプレートを見る",
   "footer.template": "GitHub（Editor テンプレート）",
+  "footer.workflowDefinitions": "GitHub（ワークフロー定義）",
   "paobub.point1": "工程ごとに進める",
   "paobub.point1.body": "Project を工程に分け、ワークフローの定義に沿って進めます。AI が作った成果物を人が確かめて受け入れ、受け入れた版は Git に固定して残ります。",
   "paobub.point2": "作るものを選ばない",
