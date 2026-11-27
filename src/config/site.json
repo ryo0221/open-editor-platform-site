@@ -84,6 +84,16 @@
       "image": "purposes/construction.jpg"
     },
     {
+      "id": "factory",
+      "editors": [
+        "factory",
+        "bim",
+        "cad"
+      ],
+      "sourceChecked": true,
+      "image": "purposes/factory.jpg"
+    },
+    {
       "id": "car",
       "editors": [
         "cad"
@@ -98,6 +108,14 @@
       ],
       "sourceChecked": true,
       "image": "purposes/watch.jpg"
+    },
+    {
+      "id": "mecha",
+      "editors": [
+        "cad"
+      ],
+      "sourceChecked": true,
+      "image": "purposes/mecha.jpg"
     },
     {
       "id": "pcb",
@@ -211,6 +229,10 @@
       },
       {
         "id": "construction",
+        "maturity": "experimental"
+      },
+      {
+        "id": "factory",
         "maturity": "experimental"
       },
       {
